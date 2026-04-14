@@ -307,7 +307,21 @@ Paracambi/RJ<br>
 
 </div>
 </section>
+<section id="cadastro">
+<div class="box">
+<h2>Cadastro de Denominações</h2>
 
+<form id="formCadastro">
+<input type="text" id="nome" placeholder="Nome da denominação" required>
+<input type="text" id="responsavel" placeholder="Responsável" required>
+<input type="email" id="email" placeholder="E-mail">
+<input type="text" id="endereco" placeholder="Endereço">
+<textarea id="info" rows="4" placeholder="Outras informações"></textarea>
+<button type="submit">Cadastrar</button>
+</form>
+
+</div>
+</section>
 <footer>
 <p>© 2026 COMEP – Conselho de Ministros Evangélicos de Paracambi</p>
 </footer>
@@ -362,6 +376,21 @@ meses.forEach(mes => {
       Horário: 19:30 hrs
     </div>
   `;
+});
+document.getElementById("formCadastro").addEventListener("submit", async function(e){
+  e.preventDefault();
+
+  const dados = {
+    nome: document.getElementById("nome").value,
+    responsavel: document.getElementById("responsavel").value,
+    email: document.getElementById("email").value,
+    endereco: document.getElementById("endereco").value,
+    info: document.getElementById("info").value,
+    criadoEm: new Date()
+  };
+
+  await salvarCadastro(dados);
+  this.reset();
 });
 </script>
 
