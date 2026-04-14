@@ -259,10 +259,8 @@ Rua Américo Rodrigues Pereira, 370<br>
 Paracambi/RJ<br>
 
 </div>
+<div id="agenda-auto"></div>
 
-<div class="cards" id="agenda-auto"></div>
-
-</div>
 </section>
 
 <section id="galeria">
@@ -314,8 +312,35 @@ Paracambi/RJ<br>
 <p>© 2026 COMEP – Conselho de Ministros Evangélicos de Paracambi</p>
 </footer>
 
-<script>
+<!-- INÍCIO FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+const firebaseConfig = {
+  apiKey: "AIzaSyD6eJ8kIie2pnWqKls4A8UZag3ERuJJ9jY",
+  authDomain: "mapa-espiritual-paracamb-bcf7f.firebaseapp.com",
+  projectId: "mapa-espiritual-paracamb-bcf7f",
+  storageBucket: "mapa-espiritual-paracamb-bcf7f.appspot.com",
+  messagingSenderId: "530116285883",
+  appId: "1:530116285883:web:7ac9dabd950718bc20209e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.salvarCadastro = async function(dados){
+  try{
+    await addDoc(collection(db, "cadastros"), dados);
+    alert("Cadastro enviado com sucesso!");
+  } catch(e){
+    alert("Erro ao enviar cadastro");
+  }
+}
+</script>
+<!-- FIM FIREBASE -->
+
+<script>
 const meses = [
   {nome: "Maio", data: "04/05/2026"},
   {nome: "Junho", data: "01/06/2026"},
@@ -338,7 +363,6 @@ meses.forEach(mes => {
     </div>
   `;
 });
-
 </script>
 
 </body>
