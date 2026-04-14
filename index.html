@@ -389,7 +389,7 @@ document.getElementById("formCadastro").addEventListener("submit", async functio
     criadoEm: new Date()
   };
 
-  await salvarCadastro(dados);
+  await window.salvarCadastro(dados);
   this.reset();
 });
 </script>
