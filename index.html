@@ -1,398 +1,1202 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>COMEP – Conselho de Ministros Evangélicos de Paracambi</title>
-
+<title>Apocalipse Interativo – As Sete Igrejas</title>
 <style>
+  :root {
+    --gold: #c9a84c;
+    --dark: #0d0d1a;
+    --deep: #1a1a2e;
+    --card: #16213e;
+    --accent: #e94560;
+    --text: #e8e8f0;
+    --muted: #9090b0;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--dark); color:var(--text); font-family:'Segoe UI',sans-serif; min-height:100vh; }
+  .screen { display:none; }
+  .screen.active { display:block; }
 
-body{
-font-family:Arial, Helvetica, sans-serif;
-margin:0;
-background:#F4F6F8;
-color:#0A2E52;
-}
+  /* ── HEADER ── */
+  .header { background:linear-gradient(135deg,#0d0d1a,#1a1a2e); padding:16px 20px; display:flex; align-items:center; gap:12px; border-bottom:1px solid rgba(201,168,76,.3); position:sticky; top:0; z-index:100; }
+  .header-back { background:none; border:none; color:var(--gold); font-size:22px; cursor:pointer; padding:4px 8px; border-radius:6px; transition:.2s; }
+  .header-back:hover { background:rgba(201,168,76,.15); }
+  .header h2 { color:var(--gold); font-size:18px; font-weight:700; flex:1; }
 
-header{
-background:linear-gradient(90deg,#0A2E52,#1F5FA3);
-text-align:center;
-padding:30px;
-color:white;
-border-bottom:5px solid #D4AF37;
-}
+  /* ── HOME ── */
+  #home { background:var(--dark); min-height:100vh; }
+  .hero { background:linear-gradient(180deg,#0d0d1a 0%,#1a0a2e 50%,#0d0d1a 100%); padding:40px 20px 30px; text-align:center; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+  .hero-icon { font-size:64px; margin-bottom:12px; animation:pulse 3s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+  .hero h1 { font-size:28px; font-weight:900; color:var(--gold); text-shadow:0 0 30px rgba(201,168,76,.5); margin-bottom:8px; }
+  .hero p { color:var(--muted); font-size:14px; max-width:300px; margin:0 auto; line-height:1.6; }
 
-header img{
-max-width:130px;
-}
+  /* ── SECTION LABELS ── */
+  .section-label { padding:20px 20px 10px; font-size:11px; font-weight:700; color:var(--muted); letter-spacing:2px; text-transform:uppercase; }
 
-nav{
-background:#0A2E52;
-padding:12px;
-text-align:center;
-}
+  /* ── CHURCH GRID ── */
+  .churches-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 16px 16px; }
+  .church-card { background:var(--card); border-radius:16px; padding:18px 14px; cursor:pointer; border:1px solid rgba(255,255,255,.06); transition:.25s; text-align:center; position:relative; overflow:hidden; }
+  .church-card::before { content:''; position:absolute; inset:0; background:var(--church-color,var(--gold)); opacity:0; transition:.25s; }
+  .church-card:hover::before,.church-card:active::before { opacity:.08; }
+  .church-card:hover { transform:translateY(-2px); border-color:rgba(201,168,76,.3); }
+  .church-num { font-size:10px; font-weight:700; letter-spacing:1px; color:var(--muted); margin-bottom:6px; }
+  .church-icon { font-size:30px; margin-bottom:8px; }
+  .church-name { font-size:15px; font-weight:700; color:var(--gold); margin-bottom:4px; }
+  .church-tag { font-size:11px; color:var(--muted); line-height:1.4; }
 
-nav a{
-color:white;
-margin:0 15px;
-text-decoration:none;
-font-weight:bold;
-}
+  /* ── EXTRAS GRID ── */
+  .extras-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 16px 30px; }
+  .extra-card { background:var(--card); border-radius:16px; padding:20px 14px; cursor:pointer; border:1px solid rgba(255,255,255,.06); transition:.25s; text-align:center; }
+  .extra-card:hover { transform:translateY(-2px); border-color:rgba(201,168,76,.3); background:#1e2a4a; }
+  .extra-icon { font-size:32px; margin-bottom:8px; }
+  .extra-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:3px; }
+  .extra-desc { font-size:11px; color:var(--muted); }
 
-nav a:hover{
-color:#D4AF37;
-}
+  /* ── CHURCH DETAIL ── */
+  .church-hero { padding:30px 20px 20px; text-align:center; }
+  .church-hero .big-icon { font-size:56px; margin-bottom:12px; }
+  .church-hero h1 { font-size:26px; font-weight:900; color:var(--gold); margin-bottom:4px; }
+  .church-hero .ref { color:var(--muted); font-size:13px; margin-bottom:10px; }
+  .church-hero .tag-pill { display:inline-block; background:rgba(201,168,76,.15); border:1px solid rgba(201,168,76,.3); color:var(--gold); font-size:12px; padding:4px 14px; border-radius:20px; }
+  .tabs { display:flex; gap:6px; padding:0 16px 16px; overflow-x:auto; }
+  .tab-btn { flex-shrink:0; background:var(--card); border:1px solid rgba(255,255,255,.08); color:var(--muted); padding:8px 16px; border-radius:20px; font-size:13px; cursor:pointer; transition:.2s; }
+  .tab-btn.active { background:var(--gold); border-color:var(--gold); color:#000; font-weight:700; }
+  .tab-content { display:none; padding:0 16px 30px; }
+  .tab-content.active { display:block; }
+  .content-card { background:var(--card); border-radius:14px; padding:18px; margin-bottom:14px; border:1px solid rgba(255,255,255,.06); }
+  .content-card h3 { color:var(--gold); font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .content-card p { color:var(--text); font-size:14px; line-height:1.8; }
+  .verse-box { background:rgba(201,168,76,.08); border-left:3px solid var(--gold); border-radius:0 10px 10px 0; padding:14px 16px; margin-bottom:14px; font-style:italic; font-size:14px; line-height:1.8; color:var(--text); }
+  .lesson-box { background:rgba(233,69,96,.08); border:1px solid rgba(233,69,96,.2); border-radius:12px; padding:16px; margin-top:10px; }
+  .lesson-box .lesson-label { font-size:11px; font-weight:700; letter-spacing:1px; color:var(--accent); margin-bottom:6px; }
+  .lesson-box p { color:var(--text); font-size:14px; font-weight:600; line-height:1.6; }
 
-.banner{
-background:linear-gradient(135deg,#0A2E52,#1F5FA3);
-padding:120px 20px;
-color:white;
-text-align:center;
-}
+  /* ── MAP ── */
+  .map-container { padding:16px; }
+  .map-svg-wrap { background:var(--card); border-radius:16px; overflow:hidden; position:relative; border:1px solid rgba(201,168,76,.2); }
+  .map-svg-wrap svg { width:100%; height:auto; display:block; }
+  .map-churches { padding:16px 0; }
+  .map-church-item { background:var(--card); border-radius:12px; padding:14px 16px; margin-bottom:10px; border:1px solid rgba(255,255,255,.06); display:flex; align-items:center; gap:14px; cursor:pointer; transition:.2s; }
+  .map-church-item:hover { border-color:rgba(201,168,76,.3); background:#1e2a4a; }
+  .map-dot { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .map-church-name { font-weight:700; color:var(--gold); font-size:14px; }
+  .map-church-loc { font-size:12px; color:var(--muted); }
+  .map-info-box { background:rgba(201,168,76,.08); border:1px solid rgba(201,168,76,.2); border-radius:12px; padding:14px 16px; margin-bottom:16px; }
+  .map-info-box p { font-size:13px; color:var(--muted); line-height:1.7; }
 
-.versiculo{
-background:#1F5FA3;
-color:white;
-text-align:center;
-padding:20px;
-font-size:1.2em;
-animation:fade 5s infinite alternate;
-}
+  /* ── QUIZ ── */
+  .quiz-wrap { padding:16px 16px 30px; }
+  .quiz-score-bar { background:var(--card); border-radius:12px; padding:14px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(255,255,255,.06); }
+  .quiz-score-bar .score { font-size:22px; font-weight:900; color:var(--gold); }
+  .quiz-score-bar .progress { font-size:13px; color:var(--muted); }
+  .quiz-q { background:var(--card); border-radius:14px; padding:20px; margin-bottom:14px; border:1px solid rgba(255,255,255,.06); }
+  .quiz-q .q-num { font-size:11px; color:var(--muted); letter-spacing:1px; margin-bottom:8px; }
+  .quiz-q .q-text { font-size:16px; font-weight:600; line-height:1.6; color:var(--text); }
+  .quiz-opts { display:flex; flex-direction:column; gap:10px; }
+  .quiz-opt { background:var(--card); border:1.5px solid rgba(255,255,255,.1); border-radius:12px; padding:14px 16px; cursor:pointer; font-size:14px; color:var(--text); transition:.2s; text-align:left; }
+  .quiz-opt:hover:not(:disabled) { border-color:var(--gold); background:rgba(201,168,76,.08); }
+  .quiz-opt.correct { border-color:#4caf50; background:rgba(76,175,80,.15); color:#81c784; }
+  .quiz-opt.wrong { border-color:var(--accent); background:rgba(233,69,96,.15); color:#ef9a9a; }
+  .quiz-opt:disabled { cursor:default; }
+  .quiz-next { width:100%; background:var(--gold); color:#000; border:none; border-radius:12px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; margin-top:14px; transition:.2s; }
+  .quiz-next:hover { background:#e0b84d; }
+  .quiz-result { text-align:center; padding:40px 20px; }
+  .quiz-result .result-icon { font-size:64px; margin-bottom:16px; }
+  .quiz-result h2 { font-size:24px; font-weight:900; color:var(--gold); margin-bottom:8px; }
+  .quiz-result p { color:var(--muted); font-size:15px; margin-bottom:24px; }
+  .quiz-result .final-score { font-size:48px; font-weight:900; color:var(--gold); }
+  .btn-restart { background:var(--gold); color:#000; border:none; border-radius:12px; padding:14px 32px; font-size:15px; font-weight:700; cursor:pointer; }
 
-@keyframes fade{
-from{opacity:0.5;}
-to{opacity:1;}
-}
+  /* ── DEVOTIONAL ── */
+  .dev-grid { padding:16px; display:flex; flex-direction:column; gap:12px; }
+  .dev-card { background:var(--card); border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.06); cursor:pointer; transition:.2s; }
+  .dev-card:hover { border-color:rgba(201,168,76,.3); }
+  .dev-card-header { padding:16px; display:flex; align-items:center; gap:14px; }
+  .dev-card-icon { font-size:28px; }
+  .dev-card-title { font-weight:700; color:var(--gold); font-size:15px; }
+  .dev-card-subtitle { font-size:12px; color:var(--muted); margin-top:2px; }
+  .dev-card-body { padding:0 16px 16px; display:none; border-top:1px solid rgba(255,255,255,.06); padding-top:14px; }
+  .dev-card-body.open { display:block; }
+  .dev-verse { font-style:italic; color:var(--gold); font-size:13px; margin-bottom:10px; background:rgba(201,168,76,.08); padding:10px 12px; border-radius:8px; }
+  .dev-text { font-size:14px; line-height:1.8; color:var(--text); margin-bottom:10px; }
+  .dev-prayer { background:rgba(233,69,96,.08); border:1px solid rgba(233,69,96,.2); border-radius:10px; padding:12px; }
+  .dev-prayer-label { font-size:11px; font-weight:700; color:var(--accent); letter-spacing:1px; margin-bottom:6px; }
+  .dev-prayer p { font-size:13px; color:var(--text); line-height:1.7; }
 
-section{
-max-width:1100px;
-margin:auto;
-padding:40px 20px;
-}
+  /* ── INTRO ── */
+  .intro-wrap { padding:16px 16px 30px; }
+  .intro-hero { text-align:center; padding:20px 0 30px; }
+  .intro-hero .big-num { font-size:72px; font-weight:900; color:var(--gold); opacity:.15; position:absolute; }
+  .intro-section { background:var(--card); border-radius:14px; padding:18px; margin-bottom:14px; border:1px solid rgba(255,255,255,.06); }
+  .intro-section h3 { color:var(--gold); font-size:15px; margin-bottom:10px; }
+  .intro-section p { font-size:14px; line-height:1.8; color:var(--text); }
+  .intro-section ul { padding-left:18px; }
+  .intro-section ul li { font-size:14px; line-height:1.9; color:var(--text); }
+  .timeline { position:relative; padding-left:20px; }
+  .timeline::before { content:''; position:absolute; left:6px; top:0; bottom:0; width:2px; background:rgba(201,168,76,.3); }
+  .tl-item { position:relative; margin-bottom:18px; }
+  .tl-item::before { content:''; position:absolute; left:-17px; top:4px; width:10px; height:10px; border-radius:50%; background:var(--gold); border:2px solid var(--dark); }
+  .tl-item h4 { color:var(--gold); font-size:14px; margin-bottom:4px; }
+  .tl-item p { font-size:13px; color:var(--muted); line-height:1.6; }
 
-.box{
-background:white;
-padding:25px;
-border-radius:10px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
-margin-bottom:30px;
-}
+    /* ── ASSISTANT ── */
+  .assistant-wrap { display:flex; flex-direction:column; height:calc(100vh - 60px); }
+  .chat-messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
+  .msg { max-width:85%; padding:12px 14px; border-radius:14px; font-size:14px; line-height:1.7; }
+  .msg.user { align-self:flex-end; background:var(--gold); color:#000; border-radius:14px 14px 4px 14px; font-weight:500; }
+  .msg.bot { align-self:flex-start; background:var(--card); border:1px solid rgba(255,255,255,.08); color:var(--text); border-radius:14px 14px 14px 4px; }
+  .msg.bot .bot-icon { font-size:18px; margin-bottom:6px; display:block; }
+  .chat-input-wrap { padding:12px 16px; background:var(--deep); border-top:1px solid rgba(255,255,255,.06); display:flex; gap:10px; }
+  .chat-input { flex:1; background:var(--card); border:1px solid rgba(255,255,255,.1); border-radius:24px; padding:12px 16px; color:var(--text); font-size:14px; outline:none; }
+  .chat-input:focus { border-color:rgba(201,168,76,.4); }
+  .chat-send { background:var(--gold); border:none; border-radius:50%; width:44px; height:44px; font-size:18px; cursor:pointer; transition:.2s; flex-shrink:0; }
+  .chat-send:hover { background:#e0b84d; }
+  .quick-questions { padding:0 16px 12px; display:flex; gap:8px; overflow-x:auto; }
+  .qq-btn { flex-shrink:0; background:var(--card); border:1px solid rgba(255,255,255,.1); color:var(--muted); padding:8px 14px; border-radius:20px; font-size:12px; cursor:pointer; transition:.2s; white-space:nowrap; }
+  .qq-btn:hover { border-color:var(--gold); color:var(--gold); }
 
-h2{
-border-left:6px solid #D4AF37;
-padding-left:10px;
-}
+  /* ── AUDIO ── */
+  .audio-wrap { padding:16px 16px 30px; }
+  .audio-card { background:var(--card); border-radius:14px; padding:18px; margin-bottom:12px; border:1px solid rgba(255,255,255,.06); }
+  .audio-card-header { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+  .audio-thumb { width:48px; height:48px; border-radius:12px; background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(201,168,76,.1)); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+  .audio-title { font-weight:700; color:var(--gold); font-size:14px; }
+  .audio-duration { font-size:12px; color:var(--muted); margin-top:2px; }
+  .audio-player { background:rgba(255,255,255,.04); border-radius:10px; padding:12px; }
+  .audio-progress { background:rgba(255,255,255,.1); border-radius:4px; height:4px; margin-bottom:10px; overflow:hidden; cursor:pointer; }
+  .audio-progress-bar { height:100%; background:var(--gold); border-radius:4px; transition:width .1s; }
+  .audio-controls { display:flex; align-items:center; justify-content:center; gap:16px; }
+  .audio-btn { background:none; border:none; color:var(--text); font-size:20px; cursor:pointer; padding:6px; border-radius:8px; transition:.2s; }
+  .audio-btn:hover { color:var(--gold); }
+  .audio-play-btn { background:var(--gold); color:#000; width:44px; height:44px; border-radius:50%; border:none; font-size:18px; cursor:pointer; transition:.2s; display:flex; align-items:center; justify-content:center; }
+  .audio-play-btn:hover { background:#e0b84d; transform:scale(1.05); }
+  .audio-time { font-size:12px; color:var(--muted); text-align:center; margin-top:8px; }
 
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-}
-
-.card{
-background:#E6F0FA;
-padding:20px;
-border-left:5px solid #D4AF37;
-border-radius:8px;
-}
-
-.galeria{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-}
-
-.galeria img{
-width:100%;
-border-radius:8px;
-}
-
-form{
-display:flex;
-flex-direction:column;
-}
-
-input,textarea{
-margin-top:10px;
-padding:10px;
-border-radius:5px;
-border:1px solid #ccc;
-}
-
-button{
-margin-top:15px;
-padding:12px;
-background:#0A2E52;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
-
-button:hover{
-background:#D4AF37;
-color:#0A2E52;
-}
-
-.redes a{
-display:inline-block;
-margin:10px;
-padding:12px 18px;
-background:#E6F0FA;
-border-radius:8px;
-text-decoration:none;
-font-weight:bold;
-color:#0A2E52;
-}
-
-.redes a:hover{
-background:#D4AF37;
-}
-
-footer{
-background:#0A2E52;
-color:white;
-text-align:center;
-padding:25px;
-border-top:5px solid #D4AF37;
-}
-
+  /* scrollbar */
+  ::-webkit-scrollbar { width:4px; height:4px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:rgba(201,168,76,.3); border-radius:4px; }
 </style>
 </head>
-
 <body>
 
-<header>
-<img src="logo-comep.png">
-<h1>COMEP</h1>
-<p>Conselho de Ministros Evangélicos de Paracambi</p>
-</header>
+<!-- ══════════════════ HOME ══════════════════ -->
+<div id="home" class="screen active">
+  <div class="hero">
+    <div class="hero-icon">📜</div>
+    <h1>Apocalipse Interativo</h1>
+    <p>As Sete Igrejas do Apocalipse — Estude, Reflita e Cresça na Fé</p>
+  </div>
 
-<nav>
-<a href="#sobre">Sobre</a>
-<a href="#missao">Missão</a>
-<a href="#atuacao">Atuação</a>
-<a href="#agenda">Agenda</a>
-<a href="#galeria">Galeria</a>
-<a href="#redes">Redes</a>
-<a href="#contato">Contato</a>
-</nav>
+  <div class="section-label">As Sete Igrejas</div>
+  <div class="churches-grid" id="churches-grid"></div>
 
-<div class="banner">
-<h1>Conselho de Ministros Evangélicos de Paracambi</h1>
-<p>Unindo pastores e igrejas para o avanço do Reino de Deus</p>
+  <div class="section-label">Explorar</div>
+  <div class="extras-grid">
+    <div class="extra-card" onclick="showScreen('intro')">
+      <div class="extra-icon">📖</div>
+      <div class="extra-title">Introdução</div>
+      <div class="extra-desc">Contexto do Apocalipse</div>
+    </div>
+    <div class="extra-card" onclick="showScreen('map')">
+      <div class="extra-icon">🗺️</div>
+      <div class="extra-title">Mapa</div>
+      <div class="extra-desc">Onde ficavam as igrejas</div>
+    </div>
+<div class="extra-card" onclick="showScreen('pdf-apocalipse')">
+  <div class="extra-icon">📘</div>
+  <div class="extra-title">Apocalipse Explicado</div>
+  <div class="extra-desc">Estudo em PDF</div>
+</div>
+    <div class="extra-card" onclick="startQuiz()">
+      <div class="extra-icon">🧠</div>
+      <div class="extra-title">Quiz Bíblico</div>
+      <div class="extra-desc">100 perguntas</div>
+    </div>
+    <div class="extra-card" onclick="showScreen('devotionals')">
+      <div class="extra-icon">🕊️</div>
+      <div class="extra-title">Devocionais</div>
+      <div class="extra-desc">Reflexões diárias</div>
+    </div>
+    <div class="extra-card" onclick="showScreen('audio')">
+      <div class="extra-icon">🎧</div>
+      <div class="extra-title">Áudios</div>
+      <div class="extra-desc">Estudos explicativos</div>
+    </div>
+    <div class="extra-card" onclick="showScreen('assistant')">
+      <div class="extra-icon">✨</div>
+      <div class="extra-title">Assistente</div>
+      <div class="extra-desc">Pergunte sobre a Bíblia</div>
+    </div>
+  </div>
 </div>
 
-<div class="versiculo">
-“Oh! Quão bom e quão suave é que os irmãos vivam em união.” – Salmo 133:1
+<!-- ══════════════════ INTRO ══════════════════ -->
+<div id="intro" class="screen">
+  <div class="header">
+    <button class="header-back" onclick="showScreen('home')">←</button>
+    <h2>Introdução ao Apocalipse</h2>
+  </div>
+  <div class="intro-wrap">
+    <div class="intro-section">
+      <h3>📖 O que é o Apocalipse?</h3>
+      <p>O Apocalipse (do grego <em>apokalypsis</em>, "revelação") é o último livro da Bíblia, escrito pelo apóstolo João enquanto estava exilado na ilha de Patmos por volta de 95 d.C., durante o reinado do imperador romano Domiciano. É um livro profético, simbólico e repleto de visões sobre o fim dos tempos, a vitória de Cristo e a redenção final da humanidade.</p>
+    </div>
+    <div class="intro-section">
+      <h3>✍️ Autor e Contexto</h3>
+      <p>João foi preso e exilado em Patmos por pregar o evangelho. Lá recebeu visões do Cristo ressuscitado, que lhe ordenou escrever às sete igrejas da Ásia Menor — regiões que hoje pertencem à Turquia moderna. As igrejas enfrentavam perseguição, heresia e desânimo espiritual.</p>
+    </div>
+    <div class="intro-section">
+      <h3>🏛️ As Sete Igrejas — Por que sete?</h3>
+      <p>O número sete na Bíblia representa perfeição e completude. As sete igrejas eram comunidades reais, mas também representam a Igreja universal em todas as épocas. Cada mensagem tem:</p>
+      <ul>
+        <li>Uma descrição de Cristo relacionada ao contexto local</li>
+        <li>Um elogio (quando havia)</li>
+        <li>Uma repreensão (quando havia)</li>
+        <li>Um chamado ao arrependimento</li>
+        <li>Uma promessa ao vencedor</li>
+      </ul>
+    </div>
+    <div class="intro-section">
+      <h3>📅 Linha do Tempo</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <h4>~64–68 d.C.</h4>
+          <p>Perseguição de Nero contra os cristãos em Roma</p>
+        </div>
+        <div class="tl-item">
+          <h4>~85–95 d.C.</h4>
+          <p>João exilado em Patmos por Domiciano</p>
+        </div>
+        <div class="tl-item">
+          <h4>~95–96 d.C.</h4>
+          <p>João recebe as visões e escreve o Apocalipse</p>
+        </div>
+        <div class="tl-item">
+          <h4>Século II</h4>
+          <p>Cartas circulam entre as comunidades cristãs da Ásia Menor</p>
+        </div>
+        <div class="tl-item">
+          <h4>397 d.C.</h4>
+          <p>Cânon cristão consolidado incluindo o Apocalipse</p>
+        </div>
+      </div>
+    </div>
+    <div class="intro-section">
+      <h3>🔑 Chave de Leitura</h3>
+      <p>O Apocalipse não é um livro para causar medo, mas para dar esperança. A mensagem central é: <strong style="color:var(--gold)">Cristo venceu e os seus também vencerão.</strong> Independente das tribulações, o Cordeiro de Deus reina sobre toda a história.</p>
+    </div>
+  </div>
 </div>
 
-<section id="sobre">
-<div class="box">
-<h2>Sobre</h2>
-<p>O COMEP é uma organização que reúne ministros evangélicos de Paracambi com o propósito de promover unidade, comunhão e crescimento espiritual entre as igrejas.</p>
-</div>
-</section>
-
-<section id="missao">
-<div class="box">
-<h2>Missão</h2>
-<p>Fortalecer a igreja, incentivar a cooperação entre ministérios e impactar a cidade com os valores do Reino de Deus.</p>
-</div>
-</section>
-
-<section id="atuacao">
-<div class="box">
-<h2>Atuação</h2>
-<p>Realizamos reuniões mensais, eventos, ações sociais e apoio entre igrejas locais.</p>
-</div>
-</section>
-
-<section id="agenda">
-<div class="box">
-
-<h2>
-  AGENDA 2026<br>
-  REUNIÕES
-</h2>
-<!-- ABRIL COMPLETO -->
-<div class="card">
-
-<strong>Abril 2026</strong><br><br>
-
-Data: 06/04/2026<br>
-Horário: 19:30 hrs<br><br>
-
-<strong>Cronograma:</strong><br>
-🕖 19h - Café<br>
-🕢 19:30h - Louvor<br>
-🙏 19:40h - Oração e Ceia<br>
-📖 20:10h - Devocional<br>
-📝 20:30h - Expediente<br>
-✅ 21:00h - Encerramento<br><br>
-<strong>Igreja Anfitriã:</strong><br>
-Comunidade Apostólica Novos Amigos<br>
-Rua Deputado Romeu Natal, 369<br>
-Lages – Paracambi/RJ<br><br>
-
-</div>
-<div class="card">
-
-<strong>Maio 2026</strong><br><br>
-
-Data: 04/05/2026<br>
-Horário: 19:00 hrs<br><br>
-
-<strong>Cronograma:</strong><br>
-🕖 19h - Café<br>
-🕢 19:30h - Louvor<br>
-🙏 19:40h - Oração e Ceia<br>
-📖 20:10h - Devocional<br>
-📝 20:30h - Expediente<br>
-✅ 21:00h - Encerramento<br><br>
-
-<strong>Igreja Anfitriã:</strong><br>
-Igreja Cristã Nova Vida de Paracambi<br>
-Rua Américo Rodrigues Pereira, 370<br>
-Paracambi/RJ<br>
-
-</div>
-<div id="agenda-auto"></div>
-
-</section>
-
-<section id="galeria">
-<div class="box">
-<h2>Galeria</h2>
-<div class="galeria">
-<img src="https://via.placeholder.com/400x300">
-<img src="https://via.placeholder.com/400x300">
-</div>
-</div>
-</section>
-
-<section id="redes">
-<div class="box">
-<h2>Redes Sociais</h2>
-
-<div class="redes">
-
-<a href="https://www.youtube.com/@ConselhodeMinistrosEvang%C3%A9licos" target="_blank">
-📺 YouTube
-</a>
-
-<a href="https://www.facebook.com/comep.pbi" target="_blank">
-📘 Acesse nosso Facebook
-</a>
-
+<!-- ══════════════════ CHURCH DETAIL ══════════════════ -->
+<div id="church-detail" class="screen">
+  <div class="header">
+    <button class="header-back" onclick="showScreen('home')">←</button>
+    <h2 id="church-detail-title">Igreja</h2>
+  </div>
+  <div id="church-detail-content"></div>
 </div>
 
+<!-- ══════════════════ MAP ══════════════════ -->
+<div id="map" class="screen">
+  <div class="header">
+    <button class="header-back" onclick="showScreen('home')">←</button>
+    <h2>Mapa das Sete Igrejas</h2>
+  </div>
+  <div class="map-container">
+    <div class="map-info-box">
+      <p>As sete igrejas estavam localizadas na Ásia Menor (atual Turquia), numa rota circular de aproximadamente 500 km. A ordem das cartas segue a rota natural de um mensageiro saindo de Éfeso.</p>
+    </div>
+    <div class="map-svg-wrap">
+      <svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="mapGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#1e2a4a"/>
+            <stop offset="100%" style="stop-color:#0d0d1a"/>
+          </radialGradient>
+        </defs>
+        <!-- background -->
+        <rect width="500" height="320" fill="url(#mapGrad)"/>
+        <!-- Turkey shape (simplified) -->
+        <path d="M30,140 Q60,110 100,105 Q140,100 180,90 Q220,80 260,75 Q300,70 340,78 Q380,86 420,100 Q450,112 470,130 Q480,145 475,165 Q468,188 450,200 Q430,215 400,225 Q360,235 320,240 Q280,245 240,248 Q200,250 165,245 Q130,240 100,228 Q70,215 50,198 Q30,180 25,160 Z" fill="#16213e" stroke="rgba(201,168,76,0.3)" stroke-width="1.5"/>
+        <!-- Sea label -->
+        <text x="30" y="200" fill="rgba(100,140,200,0.5)" font-size="9" font-family="sans-serif">Mar Egeu</text>
+        <text x="380" y="280" fill="rgba(100,140,200,0.5)" font-size="9" font-family="sans-serif">Mediterrâneo</text>
+        <!-- Route line -->
+        <polyline points="120,185 150,155 200,130 250,140 295,120 330,150 355,180" fill="none" stroke="rgba(201,168,76,0.4)" stroke-width="1.5" stroke-dasharray="5,4"/>
+        <!-- Church markers -->
+        <!-- Éfeso -->
+        <circle cx="120" cy="185" r="10" fill="#e94560" opacity=".9"/>
+        <text x="120" y="189" text-anchor="middle" font-size="10" fill="white">1</text>
+        <text x="120" y="204" text-anchor="middle" font-size="8.5" fill="#c9a84c">Éfeso</text>
+        <!-- Esmirna -->
+        <circle cx="150" cy="155" r="10" fill="#ff7043" opacity=".9"/>
+        <text x="150" y="159" text-anchor="middle" font-size="10" fill="white">2</text>
+        <text x="150" y="174" text-anchor="middle" font-size="8.5" fill="#c9a84c">Esmirna</text>
+        <!-- Pérgamo -->
+        <circle cx="200" cy="130" r="10" fill="#ab47bc" opacity=".9"/>
+        <text x="200" y="134" text-anchor="middle" font-size="10" fill="white">3</text>
+        <text x="200" y="149" text-anchor="middle" font-size="8.5" fill="#c9a84c">Pérgamo</text>
+        <!-- Tiatira -->
+        <circle cx="250" cy="140" r="10" fill="#1976d2" opacity=".9"/>
+        <text x="250" y="144" text-anchor="middle" font-size="10" fill="white">4</text>
+        <text x="250" y="159" text-anchor="middle" font-size="8.5" fill="#c9a84c">Tiatira</text>
+        <!-- Sardes -->
+        <circle cx="295" cy="120" r="10" fill="#388e3c" opacity=".9"/>
+        <text x="295" y="124" text-anchor="middle" font-size="10" fill="white">5</text>
+        <text x="295" y="139" text-anchor="middle" font-size="8.5" fill="#c9a84c">Sardes</text>
+        <!-- Filadélfia -->
+        <circle cx="330" cy="150" r="10" fill="#f57c00" opacity=".9"/>
+        <text x="330" y="154" text-anchor="middle" font-size="10" fill="white">6</text>
+        <text x="330" y="169" text-anchor="middle" font-size="8.5" fill="#c9a84c">Filad.</text>
+        <!-- Laodiceia -->
+        <circle cx="355" cy="180" r="10" fill="#c9a84c" opacity=".9"/>
+        <text x="355" y="184" text-anchor="middle" font-size="10" fill="white">7</text>
+        <text x="355" y="199" text-anchor="middle" font-size="8.5" fill="#c9a84c">Laodic.</text>
+        <!-- Patmos island -->
+        <ellipse cx="75" cy="210" rx="12" ry="7" fill="#1e2a4a" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <text x="75" y="213" text-anchor="middle" font-size="7" fill="#c9a84c">Patmos</text>
+        <text x="75" y="226" text-anchor="middle" font-size="6.5" fill="rgba(201,168,76,0.5)">(João)</text>
+      </svg>
+    </div>
+    <div class="map-churches" id="map-churches-list"></div>
+  </div>
 </div>
-</section>
 
-<section id="contato">
-<div class="box">
-<h2>Contato</h2>
-
-<form action="https://formspree.io/f/SEU-CODIGO" method="POST">
-<input type="text" name="nome" placeholder="Nome" required>
-<input type="email" name="email" placeholder="E-mail" required>
-<textarea name="mensagem" rows="5" placeholder="Mensagem"></textarea>
-<button type="submit">Enviar</button>
-</form>
-
-<p><strong>comep@comep.com.br</strong></p>
-
+<!-- ══════════════════ QUIZ ══════════════════ -->
+<div id="quiz" class="screen">
+  <div class="header">
+    <button class="header-back" onclick="showScreen('home')">←</button>
+    <h2>Quiz Bíblico</h2>
+  </div>
+  <div class="quiz-wrap" id="quiz-content"></div>
 </div>
-</section>
-<section id="cadastro">
-<div class="box">
-<h2>Cadastro de Denominações</h2>
 
-<form id="formCadastro">
-<input type="text" id="nome" placeholder="Nome da denominação" required>
-<input type="text" id="responsavel" placeholder="Responsável" required>
-<input type="email" id="email" placeholder="E-mail">
-<input type="text" id="endereco" placeholder="Endereço">
-<textarea id="info" rows="4" placeholder="Outras informações"></textarea>
-<button type="submit">Cadastrar</button>
-</form>
-
+<!-- ══════════════════ DEVOTIONALS ══════════════════ -->
+<div id="devotionals" class="screen">
+  <div class="header">
+    <button class="header-back" onclick="showScreen('home')">←</button>
+    <h2>Devocionais</h2>
+  </div>
+  <div class="dev-grid" id="dev-grid"></div>
 </div>
-</section>
-<footer>
-<p>© 2026 COMEP – Conselho de Ministros Evangélicos de Paracambi</p>
-</footer>
 
-<!-- INÍCIO FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<!-- ══════════════════ AUDIO ══════════════════ -->
+<div id="audio" class="screen">
+  <div class="header">
+    <button class="header-back" onclick="showScreen('home')">←</button>
+    <h2>Áudios Explicativos</h2>
+  </div>
+  <div class="audio-wrap" id="audio-list"></div>
+</div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD6eJ8kIie2pnWqKls4A8UZag3ERuJJ9jY",
-  authDomain: "mapa-espiritual-paracamb-bcf7f.firebaseapp.com",
-  projectId: "mapa-espiritual-paracamb-bcf7f",
-  storageBucket: "mapa-espiritual-paracamb-bcf7f.appspot.com",
-  messagingSenderId: "530116285883",
-  appId: "1:530116285883:web:7ac9dabd950718bc20209e"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.salvarCadastro = async function(dados){
-  try{
-    await addDoc(collection(db, "cadastros"), dados);
-    alert("Cadastro enviado com sucesso!");
-  } catch(e){
-    alert("Erro ao enviar cadastro");
-  }
-}
-</script>
-<!-- FIM FIREBASE -->
+<!-- ══════════════════ ASSISTANT ══════════════════ -->
+<div id="assistant" class="screen">
+  <div class="header">
+    <button class="header-back" onclick="showScreen('home')">←</button>
+    <h2>Assistente Bíblico</h2>
+  </div>
+  <div class="assistant-wrap">
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg bot"><span class="bot-icon">✨</span>Olá! Sou seu assistente bíblico do Apocalipse. Pergunte-me sobre as sete igrejas, personagens, simbologias ou qualquer tema do livro do Apocalipse.</div>
+    </div>
+    <div class="quick-questions">
+      <button class="qq-btn" onclick="sendQuick('O que significa a igreja morna de Laodiceia?')">Igreja morna?</button>
+      <button class="qq-btn" onclick="sendQuick('Quem é o autor do Apocalipse?')">Quem escreveu?</button>
+      <button class="qq-btn" onclick="sendQuick('Qual igreja perdeu o primeiro amor?')">Primeiro amor?</button>
+      <button class="qq-btn" onclick="sendQuick('O que é a Estrela da Manhã?')">Estrela da manhã?</button>
+      <button class="qq-btn" onclick="sendQuick('Qual church era perseguida?')">Igreja perseguida?</button>
+      <button class="qq-btn" onclick="sendQuick('O que é o trono de Satanás?')">Trono de Satanás?</button>
+    </div>
+    <div class="chat-input-wrap">
+      <input class="chat-input" id="chat-input" type="text" placeholder="Faça uma pergunta bíblica..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()">➤</button>
+    </div>
+  </div>
+</div>
 
 <script>
-const meses = [
-  {nome: "Maio", data: "04/05/2026"},
-  {nome: "Junho", data: "01/06/2026"},
-  {nome: "Julho", data: "06/07/2026"},
-  {nome: "Agosto", data: "03/08/2026"},
-  {nome: "Setembro", data: "14/09/2026"},
-  {nome: "Outubro", data: "05/10/2026"},
-  {nome: "Novembro", data: "09/11/2026"},
-  {nome: "Dezembro", data: "07/12/2026"}
+// ════════════════════════════════════
+//  DATA
+// ════════════════════════════════════
+const churches = [
+  {
+    id:'efeso', name:'Éfeso', num:1, icon:'🕯️', color:'#e94560',
+    ref:'Apocalipse 2:1–7',
+    tag:'Igreja do Primeiro Amor',
+    mapLoc:'Costa oeste da Turquia, atual İzmir ili',
+    mapCity:'Selçuk, Turquia',
+    description:'Uma das maiores cidades do Império Romano, com cerca de 250.000 habitantes. Éfeso era um centro comercial, religioso e intelectual. Abrigava o templo de Ártemis, uma das sete maravilhas do mundo antigo.',
+    chrDesc:'Cristo se apresenta como aquele que "tem as sete estrelas em sua mão direita e anda no meio dos sete candelabros de ouro" — simbolizando seu controle sobre os pastores e presença entre as igrejas.',
+    praises:'Trabalho arduo, perseverança e intolerância ao mal. Testaram falsos apóstolos e os rejeitaram. Suportaram sofrimentos por amor ao nome de Cristo.',
+    reproofs:'Abandonaram o primeiro amor. O fervor inicial havia esfriado. O serviço continuava, mas o amor apaixonado por Cristo havia diminuído.',
+    call:'Lembre-se de onde caíste. Arrependa-te e volta às primeiras obras. O amor a Deus deve ser a raiz de todo serviço.',
+    promise:'Ao vencedor, o direito de comer da árvore da vida no paraíso de Deus.',
+    lesson:'Não basta servir a Deus — é preciso amar a Deus. O serviço sem amor vira religiosidade vazia.',
+    historical:'O porto de Éfeso era um dos mais movimentados do mediterrâneo oriental. Paulo morou lá por 3 anos (At 20:31) e Timóteo serviu como pastor. João viveu seus últimos anos em Éfeso.',
+    spiritual:'A perda do primeiro amor é gradual e quase imperceptível. Quando servimos por obrigação e não por amor, algo fundamental se perdeu. O remédio é a memória (lembre), o arrependimento e a renovação.',
+    verses:[
+      '"Conheço as tuas obras, o teu trabalho e a tua perseverança..." (Ap 2:2)',
+      '"Tenho, porém, contra ti que abandonaste o teu primeiro amor." (Ap 2:4)',
+      '"Lembra-te, pois, de onde caíste, arrepende-te e volta às primeiras obras." (Ap 2:5)'
+    ]
+  },
+  {
+    id:'esmirna', name:'Esmirna', num:2, icon:'👑', color:'#ff7043',
+    ref:'Apocalipse 2:8–11',
+    tag:'Igreja Perseguida e Fiel',
+    mapLoc:'Costa oeste da Turquia, atual İzmir',
+    mapCity:'İzmir, Turquia',
+    description:'Esmirna era uma bela cidade portuária, chamada de "a coroa da Ásia". Era leal a Roma e tinha uma grande comunidade judaica que frequentemente denunciava os cristãos às autoridades romanas.',
+    chrDesc:'Cristo se apresenta como "o Primeiro e o Último, que esteve morto e voltou a viver" — a única esperança para quem enfrenta a morte é aquele que venceu a morte.',
+    praises:'Nenhuma repreensão! Apesar da tribulação, pobreza e calúnia, permaneceram fiéis. A pobreza material não os impediu de serem ricos espiritualmente.',
+    reproofs:'Nenhuma — esta é uma das duas igrejas sem repreensão.',
+    call:'"Não temas o que terás de sofrer... sê fiel até a morte e dar-te-ei a coroa da vida." A perseguição não é sinal de abandono divino, mas de oposição ao mal.',
+    promise:'O vencedor não sofrerá dano pela segunda morte (o julgamento eterno).',
+    lesson:'A fidelidade vale mais que a prosperidade. A pobreza material não impede a riqueza espiritual. O sofrimento temporário não se compara com a glória eterna.',
+    historical:'Policarpo, discípulo do apóstolo João e bispo de Esmirna, foi martirizado por volta de 155 d.C. quando tinha 86 anos. Ao ser pressionado a negar Cristo, respondeu: "Oitenta e seis anos o tenho servido e ele nunca me fez mal algum. Como poderia blasfemar de meu Rei?"',
+    spiritual:'Deus não promete ausência de sofrimento, mas sua presença no sofrimento. "Sê fiel até a morte" — não é um prazo assustador, mas um convite à coragem baseada na ressurreição de Cristo.',
+    verses:[
+      '"Conheço a tua tribulação e a tua pobreza — mas tu és rico!" (Ap 2:9)',
+      '"...sê fiel até a morte, e dar-te-ei a coroa da vida." (Ap 2:10)',
+      '"O vencedor não sofrerá dano da segunda morte." (Ap 2:11)'
+    ]
+  },
+  {
+    id:'pergamo', name:'Pérgamo', num:3, icon:'⚔️', color:'#ab47bc',
+    ref:'Apocalipse 2:12–17',
+    tag:'Igreja no Trono de Satanás',
+    mapLoc:'Interior da Turquia, atual Bergama',
+    mapCity:'Bergama, Turquia',
+    description:'Pérgamo era a capital da província romana da Ásia. Possuía uma grande biblioteca (200.000 volumes), o altar de Zeus, templos a Augustus e Roma, e era centro do culto imperial. O pergaminho foi inventado aqui.',
+    chrDesc:'Cristo se apresenta com "a espada afiada de dois gumes" — a Palavra de Deus, que corta o erro e julga o pecado. Uma mensagem poderosa para uma cidade repleta de poderes opostos.',
+    praises:'Mantiveram o nome de Cristo mesmo onde estava o "trono de Satanás". Não negaram a fé nem no tempo de Antipas, mártir fiel.',
+    reproofs:'Toleravam a doutrina de Balaão (mistura de fé com imoralidade e idolatria) e a doutrina dos nicolaítas (libertinismo espiritual).',
+    call:'Arrepende-te, senão virei a ti e guerreareis contra eles com a espada de minha boca.',
+    promise:'Ao vencedor: o maná escondido e uma pedrinha branca com um nome novo — símbolo de aceitação divina e identidade renovada em Cristo.',
+    lesson:'Cuidado com a mistura entre fé e pecado. Viver num ambiente hostil exige discernimento para não assimilar os valores do mundo.',
+    historical:'O "trono de Satanás" provavelmente se referia ao grande altar de Zeus que ficava na colina de Pérgamo, ou ao centro do culto ao imperador romano — ambas formas de idolatria direta ao poder satânico.',
+    spiritual:'Antipas foi morto por ser fiel. A pressão para comprometer os valores era imensa. Hoje, a pressão cultural, o relativismo e o sincretismo religioso são formas modernas do mesmo desafio de Pérgamo.',
+    verses:[
+      '"Eu sei onde moras: onde está o trono de Satanás." (Ap 2:13)',
+      '"Tens lá os que sustentam a doutrina de Balaão..." (Ap 2:14)',
+      '"Ao vencedor darei o maná escondido e uma pedrinha branca." (Ap 2:17)'
+    ]
+  },
+  {
+    id:'tiatira', name:'Tiatira', num:4, icon:'🔥', color:'#1976d2',
+    ref:'Apocalipse 2:18–29',
+    tag:'Igreja de Amor e Tolerância',
+    mapLoc:'Interior da Turquia, atual Akhisar',
+    mapCity:'Akhisar, Turquia',
+    description:'Tiatira era conhecida por seus sindicatos e guildas comerciais. Cada guilda tinha seus deuses patronos, e participar dos banquetes (com comida oferecida a ídolos e imoralidade) era esperado dos membros. A vendedeira de púrpura Lídia era de Tiatira (At 16:14).',
+    chrDesc:'Cristo se apresenta como "o Filho de Deus, que tem olhos como chama de fogo e pés semelhantes ao bronze polido" — visão de pureza e julgamento penetrante.',
+    praises:'Amor, fé, serviço e perseverança — e as últimas obras superavam as primeiras, sinal de crescimento real.',
+    reproofs:'Toleravam Jezabel (nome simbólico de uma falsa profetisa) que ensinava imoralidade e idolatria. A tolerância com o falso ensino era um pecado grave.',
+    call:'Arrependa-se ou enfrentará julgamento severo. Os que não seguiram a "doutrina de Satanás" — segurem o que têm.',
+    promise:'Ao vencedor: autoridade sobre as nações e a Estrela da Manhã — símbolo de Cristo mesmo (Ap 22:16).',
+    lesson:'A igreja precisa de amor, mas também de santidade. A verdadeira tolerância cristã nunca tolera o pecado.',
+    historical:'A "Jezabel" de Tiatira evoca a rainha Jezabel do Antigo Testamento (1Rs 16-21), que introduziu a idolatria em Israel. A alusão aponta para influência corruptora dentro da comunidade de fé.',
+    spiritual:'O crescimento espiritual é real quando as últimas obras superam as primeiras. Mas o crescimento externo não basta se internamente há corrupção tolerada. Amor sem verdade não é amor bíblico.',
+    verses:[
+      '"Conheço as tuas obras: o teu amor, a tua fé, o teu serviço e a tua perseverança." (Ap 2:19)',
+      '"Tenho contra ti que toleras Jezabel..." (Ap 2:20)',
+      '"Ao vencedor...dar-lhe-ei a Estrela da Manhã." (Ap 2:28)'
+    ]
+  },
+  {
+    id:'sardes', name:'Sardes', num:5, icon:'💀', color:'#388e3c',
+    ref:'Apocalipse 3:1–6',
+    tag:'Igreja com Nome de Viva',
+    mapLoc:'Vale do rio Hermos, atual Sart',
+    mapCity:'Sart, Turquia',
+    description:'Sardes foi uma das cidades mais ricas e poderosas da antiguidade, capital do reino da Lídia e do lendário rei Creso. A cidade foi conquistada duas vezes por inimigos que escalaram suas muralhas tidas como inexpugnáveis — por negligência dos guardas.',
+    chrDesc:'Cristo se apresenta com "os sete espíritos de Deus e as sete estrelas" — enfatizando sua plena autoridade e o Espírito Santo em toda plenitude.',
+    praises:'Poucas pessoas que não macularam suas vestes — um remanescente fiel mesmo numa comunidade em declínio.',
+    reproofs:'Tinham nome de vivos, mas estavam mortos. As obras eram incompletas diante de Deus. A aparência religiosa não correspondia à realidade espiritual.',
+    call:'"Sê vigilante e fortalece o que resta, que estava para morrer." Retorna ao que recebeste e ouviste. Arrepende-te.',
+    promise:'O vencedor será vestido de vestes brancas e seu nome não será apagado do livro da vida.',
+    lesson:'A aparência espiritual não substitui a vida espiritual real. Atividade religiosa não é o mesmo que vida em Cristo.',
+    historical:'A história da conquista de Sardes era famosa no mundo antigo — dois grandes impérios a venceram por um descuido nas muralhas. Cristo usa essa história ao avisar: "Virei como ladrão e não saberás." A memória cultural tornava a mensagem ainda mais impactante.',
+    spiritual:'Sardes representa a church do "show" religioso — cultos cheios, programação vasta, nome respeitado — mas sem vida real no Espírito. O diagnóstico divino é implacável: "Estás morto." O remédio: vigilância, fortalecimento e arrependimento.',
+    verses:[
+      '"Tens nome de que vives, mas estás morto." (Ap 3:1)',
+      '"Sê vigilante e fortalece o que resta, que estava para morrer." (Ap 3:2)',
+      '"O vencedor assim será vestido de vestes brancas." (Ap 3:5)'
+    ]
+  },
+  {
+    id:'filadelfia', name:'Filadélfia', num:6, icon:'🔑', color:'#f57c00',
+    ref:'Apocalipse 3:7–13',
+    tag:'Igreja da Porta Aberta',
+    mapLoc:'Vale do rio Cogamus, atual Alaşehir',
+    mapCity:'Alaşehir, Turquia',
+    description:'Filadélfia significa "amor fraternal". Era uma cidade relativamente nova, fundada como um posto avançado para disseminar a cultura grega. Ficava numa região vulcânica propensa a terremotos.',
+    chrDesc:'Cristo se apresenta como "o Santo, o Verdadeiro, o que tem a chave de Davi" — aquele que abre e ninguém fecha, que fecha e ninguém abre. Autoridade absoluta sobre as oportunidades.',
+    praises:'Pouca força, mas guardou a Palavra de Cristo e não negou seu nome. Segunda igreja sem repreensão.',
+    reproofs:'Nenhuma — esta é a outra das duas igrejas sem repreensão.',
+    call:'"Guarda o que tens, para que ninguém tome a tua coroa." Permaneça fiel.',
+    promise:'Uma porta aberta que ninguém pode fechar. Proteção na hora da provação. Coluna no templo de Deus com o nome de Deus, da nova Jerusalém e o nome novo de Cristo.',
+    lesson:'Deus abre portas que ninguém pode fechar. A fraqueza humana não limita o poder divino. Fidelidade com poucos recursos honra a Deus.',
+    historical:'A palavra "filadélfia" (amor ao irmão) dá nome à famosa cidade americana — fundadores batistas que queriam criar uma comunidade de amor fraternal. A referência vem desta carta do Apocalipse.',
+    spiritual:'Filadélfia ensina que Deus não procura os mais poderosos, mas os mais fiéis. "Tens pouca força" — Deus sabe disso — "mas guardaste minha palavra." O que conta não é o tamanho do ministério, mas a fidelidade no que foi confiado.',
+    verses:[
+      '"Eis que coloquei diante de ti uma porta aberta, que ninguém pode fechar." (Ap 3:8)',
+      '"...porque guardaste a minha palavra da perseverança." (Ap 3:10)',
+      '"Guarda o que tens, para que ninguém tome a tua coroa." (Ap 3:11)'
+    ]
+  },
+  {
+    id:'laodiceia', name:'Laodiceia', num:7, icon:'🌡️', color:'#c9a84c',
+    ref:'Apocalipse 3:14–22',
+    tag:'Igreja Morna',
+    mapLoc:'Vale do rio Lico, atual Denizli',
+    mapCity:'Denizli, Turquia',
+    description:'Laodiceia era uma cidade extremamente rica, centro bancário e industrial. Produzia lã negra famosa, colírio para olhos e era conhecida pela água morna que chegava por aquedutos de fontes termais — ao contrário da água fria e medicinal de Hierápolis e da água quente terapêutica de Colossos.',
+    chrDesc:'Cristo se apresenta como "o Amém, a testemunha fiel e verdadeira, o Princípio da criação de Deus" — contrastando com a falsidade e tibieza da igreja.',
+    praises:'Nenhum elogio — única igreja sem elogio.',
+    reproofs:'Morna — nem fria nem quente. Rica e autossuficiente, sem perceber sua verdadeira pobreza espiritual: miserável, lamentável, pobre, cega e nua.',
+    call:'Compra de mim ouro refinado pelo fogo (fé genuína), vestes brancas (justiça de Cristo) e colírio (discernimento espiritual). Sê zeloso e arrepende-te.',
+    promise:'Cristo bate à porta — imagem de intimidade restaurada. O vencedor se assentará com Cristo em seu trono.',
+    lesson:'A indiferença espiritual é perigosa. Confiar na riqueza material e no sucesso externo pode cegar para a pobreza espiritual real.',
+    historical:'A ironia da mensagem era poderosa localmente: a cidade famosa por seu banco era espiritualmente pobre; famosa pelo colírio, era espiritualmente cega; famosa pela lã negra, estava espiritualmente nua. Cristo usa o próprio orgulho da cidade como espelho.',
+    spiritual:'"Eis que estou à porta e bato" — Cristo do lado de fora batendo é a imagem mais trágica do livro. Uma igreja que excluiu Cristo de dentro. Mas a misericórdia prevalece: ele ainda bate. Ainda há tempo. A porta ainda pode ser aberta.',
+    verses:[
+      '"Conheço as tuas obras, que não és frio nem quente... vomitar-te-ei da minha boca." (Ap 3:15-16)',
+      '"Dizes: Estou rico...e não sabes que és um miserável, lamentável, pobre, cego e nu." (Ap 3:17)',
+      '"Eis que estou à porta e bato; se alguém ouvir a minha voz e abrir a porta..." (Ap 3:20)'
+    ]
+  }
 ];
 
-const container = document.getElementById("agenda-auto");
+const devotionals = [
+  { church:'Éfeso', icon:'🕯️', title:'Renovando o Primeiro Amor', day:'Dia 1',
+    verse:'"Tenho, porém, contra ti que abandonaste o teu primeiro amor." (Ap 2:4)',
+    text:'Há momentos em que nos pegamos cumprindo obrigações religiosas sem o calor do amor que um dia tivemos. Talvez você ainda ora, ainda vai à igreja, ainda lê a Bíblia — mas algo mudou. A motivação não é mais o amor, é o hábito ou a obrigação. Éfeso nos alerta: é possível ser muito religioso e estar muito longe de Deus ao mesmo tempo. O serviço sem amor é barulho. A ortodoxia sem devoção é religiosidade fria. O remédio é simples, mas profundo: lembre, arrependa-se e volte. Lembre-se do que sentiu quando encontrou Cristo pela primeira vez. Aquela gratidão, aquele alívio, aquele amor. Ele ainda é o mesmo. Somos nós que mudamos.',
+    prayer:'Senhor, perdoa-me pelos momentos em que te servi por obrigação e não por amor. Renova em mim o fogo do primeiro amor. Que cada ação minha nasça de uma adoração genuína ao Senhor da minha vida. Amém.'
+  },
+  { church:'Esmirna', icon:'👑', title:'Rico na Pobreza', day:'Dia 2',
+    verse:'"Conheço a tua tribulação e a tua pobreza — mas tu és rico!" (Ap 2:9)',
+    text:'O julgamento de Deus sobre a riqueza não coincide com o julgamento humano. Esmirna era materialmente pobre, mas espiritualmente rica. Quantas vezes confundimos bênção material com aprovação divina? A prosperidade financeira pode ser graça de Deus, mas nunca é medida de santidade. Esmirna nos lembra que a perseverança na fé, mesmo no sofrimento, tem um valor eterno imensurável. O sofrimento não é sinal de que Deus se esqueceu. Pelo contrário — é na pressão que o ouro é refinado, que a fé se purifica e que o caráter de Cristo se forma em nós.',
+    prayer:'Pai, quando eu olhar para minhas circunstâncias e me sentir pobre, lembra-me que sou herdeiro de um reino eterno. Que eu nunca confunda riqueza material com aprovação divina. Dá-me fé que resiste à pressão. Amém.'
+  },
+  { church:'Pérgamo', icon:'⚔️', title:'Fé Sem Compromisso', day:'Dia 3',
+    verse:'"Tenho contra ti algumas coisas: que lá tens os que sustentam a doutrina de Balaão." (Ap 2:14)',
+    text:'Viver onde o mal é normalizado cria um risco silencioso: a gradual aceitação do inaceitável. Pérgamo estava num ambiente saturado de idolatria, imoralidade e poder político contrário a Deus. E lentamente, alguns começaram a misturar a fé com esses valores culturais. A falsa doutrina não chegou anunciando que era falsa. Ela chegou embrulhada em "tolerância", "relevância cultural" e "não vamos ser tão radicais assim". O discernimento espiritual é uma das dádivas mais necessárias para a chiesa hoje — a capacidade de amar sem comprometer, de estar no mundo sem ser do mundo.',
+    prayer:'Senhor, dá-me discernimento para reconhecer a falsidade quando ela vem vestida de sabedoria. Que eu nunca comprometa minha fé em nome de aceitação cultural. Que eu seja luz onde há trevas, sem me tornar trevas. Amém.'
+  },
+  { church:'Tiatira', icon:'🔥', title:'Amor que Não Tolera o Mal', day:'Dia 4',
+    verse:'"Tenho contra ti que toleras Jezabel, que se diz profetisa." (Ap 2:20)',
+    text:'Tiatira crescia em amor, serviço e perseverança — e ainda assim tinha um problema grave: tolerava o intolerable. A tolerância com o pecado é frequentemente confundida com amor. Mas o amor bíblico não é conivência — é correção amorosa, confronto misericordioso, verdade falada com graça. A Jezabel de Tiatira ensina que não basta ter boas intenções; precisamos ter discernimento sobre o que deixamos influenciar nossa comunidade. A santidade não é perfeccionismo ansioso — é um sim profundo a Deus que implica um não firme ao que o desonra.',
+    prayer:'Pai, que meu amor seja genuíno — capaz de confrontar com graça e afirmar com firmeza. Que eu nunca confunda tolerância com amor. Que minha vida e minha comunidade reflitam tanto tua misericórdia quanto tua santidade. Amém.'
+  },
+  { church:'Sardes', icon:'💀', title:'Vida Além da Aparência', day:'Dia 5',
+    verse:'"Tens nome de que vives, mas estás morto." (Ap 3:1)',
+    text:'A análise mais assustadora que pode ser feita de uma vida ou de uma comunidade cristã: aparência de vida, realidade de morte. Sardes tinha tudo o que, externamente, indicava saúde espiritual. Mas Deus vê o que os homens não veem. Ele vê a motivação, a intimidade (ou sua ausência), a autenticidade da devoção. A vida espiritual não pode ser fabricada. Não se sustenta com ativismo religioso ou com a memória do que um dia foi. Ela requer alimentação diária, intimidade real com o Espírito Santo, arrependimento honesto. "Sê vigilante" — a vigilância é o oposto da acomodação.',
+    prayer:'Senhor, examina-me e conhece o meu coração. Onde há apenas aparência, traz vida real. Onde eu estou apenas cumprindo papel, desperta em mim o fogo genuíno. Que eu seja autêntico diante de ti, mesmo quando ninguém está olhando. Amém.'
+  },
+  { church:'Filadélfia', icon:'🔑', title:'Portas que Só Deus Abre', day:'Dia 6',
+    verse:'"Eis que coloquei diante de ti uma porta aberta, que ninguém pode fechar." (Ap 3:8)',
+    text:'Filadélfia tinha "pouca força". Não era a maior, nem a mais influente, nem a mais dotada. Mas havia guardado a Palavra de Cristo — e isso foi o suficiente para Deus colocar uma porta aberta na frente dela. Quantas vezes deixamos de caminhar em oportunidades que Deus colocou porque nos sentimos pequenos, incapazes, sem recursos suficientes? Deus não procura os mais poderosos — procura os mais fiéis. A porta aberta não é resultado de esforço humano, mas de fidelidade. Quem a abre é Cristo. Quem a sustenta aberta é Cristo. Nossa parte é caminhar por ela.',
+    prayer:'Senhor, obrigado por abrires portas que nenhum homem pode fechar. Perdoa-me por olhar para minha fraqueza e ignorar tua força. Dá-me coragem para caminhar pelas portas que colocas à minha frente, confiando em ti. Amém.'
+  },
+  { church:'Laodiceia', icon:'🌡️', title:'A Porta que Ainda Está Fechada', day:'Dia 7',
+    verse:'"Eis que estou à porta e bato; se alguém ouvir a minha voz e abrir a porta, entrarei..." (Ap 3:20)',
+    text:'A imagem mais tocante de todo o Apocalipse: Cristo do lado de fora de uma igreja, batendo à porta. Não é uma imagem de rejeição — é uma imagem de misericórdia persistente. Ele poderia ter desistido. Mas ele bate. Ele chama. Ele espera. Laodiceia representa qualquer coração que ficou tão cheio de si mesmo — de riqueza, de sucesso, de autossuficiência — que não há mais espaço para Jesus. Mas o convite ainda está de pé: "Se alguém ouvir..." A palavra-chave é "alguém". Um único coração que se abre transforma tudo. Você vai abrir a porta?',
+    prayer:'Senhor Jesus, perdoa-me por todas as vezes que fiquei tão ocupado com minha vida que deixei de te ouvir. Hoje eu abro a porta. Entra na minha casa, na minha rotina, nos meus planos. Quero cear contigo — em intimidade renovada. Amém.'
+  }
+];
 
-meses.forEach(mes => {
-  container.innerHTML += `
-    <div class="card">
-      <strong>${mes.nome} 2026</strong><br><br>
-      Data: ${mes.data}<br>
-      Horário: 19:30 hrs
+const audioList = [
+  { title:'Introdução ao Apocalipse', church:'Geral', duration:'18:30', icon:'📖', desc:'O contexto histórico, o autor João e a mensagem central do livro do Apocalipse.' },
+  { title:'Éfeso — O Primeiro Amor', church:'Éfeso', duration:'14:20', icon:'🕯️', desc:'Como recuperar o fervor espiritual quando o coração esfria no serviço a Deus.' },
+  { title:'Esmirna — Fé na Perseguição', church:'Esmirna', duration:'16:45', icon:'👑', desc:'A riqueza espiritual na pobreza material e como suportar tribulações pela fé.' },
+  { title:'Pérgamo — Discernimento Espiritual', church:'Pérgamo', duration:'13:55', icon:'⚔️', desc:'Como viver no meio do mundo sem ser contaminado pelas falsas doutrinas.' },
+  { title:'Tiatira — Amor e Santidade', church:'Tiatira', duration:'15:10', icon:'🔥', desc:'O equilíbrio entre amor fraternal e postura firme contra o pecado na comunidade.' },
+  { title:'Sardes — Desperta!', church:'Sardes', duration:'12:40', icon:'💀', desc:'Como sair da acomodação espiritual e voltar à vida real em Cristo.' },
+  { title:'Filadélfia — Porta Aberta', church:'Filadélfia', duration:'17:25', icon:'🔑', desc:'Como a fidelidade com poucos recursos abre portas que somente Deus pode abrir.' },
+  { title:'Laodiceia — Nem Frio Nem Quente', church:'Laodiceia', duration:'19:00', icon:'🌡️', desc:'O perigo da indiferença espiritual e o convite de Cristo para intimidade renovada.' },
+  { title:'As 7 Igrejas Hoje', church:'Geral', duration:'22:15', icon:'🏛️', desc:'Como as mensagens às sete igrejas se aplicam à Igreja e ao cristão no século XXI.' },
+  { title:'Promessas ao Vencedor', church:'Geral', duration:'20:30', icon:'🏆', desc:'Estudo completo das sete promessas de Cristo aos vencedores de cada igreja.' }
+];
+
+// ════════════════════════════════════
+//  100 QUIZ QUESTIONS
+// ════════════════════════════════════
+const allQuestions = [
+  {q:'Qual igreja perdeu o primeiro amor?',opts:['Laodiceia','Éfeso','Sardes','Filadélfia'],a:1},
+  {q:'Em qual ilha João recebeu as visões do Apocalipse?',opts:['Creta','Chipre','Rodes','Patmos'],a:3},
+  {q:'Qual igreja não tem nenhuma repreensão e é chamada de perseguida?',opts:['Éfeso','Filadélfia','Esmirna','Sardes'],a:2},
+  {q:'Qual é a mensagem de Apocalipse 3:20?',opts:['Não temas o sofrimento','Eis que estou à porta e bato','Sê fiel até a morte','Guarda o que tens'],a:1},
+  {q:'Qual igreja era "nem fria nem quente"?',opts:['Pérgamo','Tiatira','Sardes','Laodiceia'],a:3},
+  {q:'O que Cristo promete ao vencedor de Éfeso?',opts:['Coroa da vida','Maná escondido','Árvore da vida','Vestes brancas'],a:2},
+  {q:'Qual cidade era chamada de "onde está o trono de Satanás"?',opts:['Éfeso','Esmirna','Pérgamo','Tiatira'],a:2},
+  {q:'Que presente Cristo promete ao vencedor de Sardes?',opts:['A Estrela da Manhã','Vestes brancas','Coroa da vida','Maná escondido'],a:1},
+  {q:'Qual é a referência bíblica da carta à Filadélfia?',opts:['Ap 3:1-6','Ap 3:7-13','Ap 2:18-29','Ap 2:12-17'],a:1},
+  {q:'Qual falsa profetisa é mencionada na carta à Tiatira?',opts:['Dalila','Jezabel','Débora','Rute'],a:1},
+  {q:'Qual igreja tinha "pouca força" mas guardou a Palavra de Cristo?',opts:['Esmirna','Sardes','Filadélfia','Laodiceia'],a:2},
+  {q:'Como Cristo se apresenta na carta a Esmirna?',opts:['O que tem a espada afiada','O Primeiro e o Último que esteve morto','O que tem os 7 espíritos','O Amém'],a:1},
+  {q:'Qual cidade é chamada de "coroa da Ásia"?',opts:['Éfeso','Esmirna','Pérgamo','Tiatira'],a:1},
+  {q:'Qual é a única igreja sem nenhum elogio?',opts:['Sardes','Pérgamo','Laodiceia','Tiatira'],a:2},
+  {q:'Qual promessa Cristo faz ao vencedor de Filadélfia?',opts:['Maná escondido','Coluna no templo de Deus','Árvore da vida','Segunda morte'],a:1},
+  {q:'Qual igreja sofria tribulação e era pobre materialmente?',opts:['Éfeso','Tiatira','Esmirna','Sardes'],a:2},
+  {q:'O que significa "Apocalipse" em grego?',opts:['Fim do mundo','Julgamento final','Revelação','Profecia'],a:2},
+  {q:'Qual é a referência bíblica da carta à Laodiceia?',opts:['Ap 3:14-22','Ap 3:7-13','Ap 2:18-29','Ap 3:1-6'],a:0},
+  {q:'Quem foi um famoso mártir bispo de Esmirna?',opts:['Paulo','Policarpo','Inácio','Clemente'],a:1},
+  {q:'A Estrela da Manhã é prometida ao vencedor de qual igreja?',opts:['Éfeso','Sardes','Filadélfia','Tiatira'],a:3},
+  {q:'Qual cidade era famosa por seu banco, colírio e lã negra?',opts:['Pérgamo','Sardes','Laodiceia','Tiatira'],a:2},
+  {q:'Qual é a referência da carta a Éfeso?',opts:['Ap 2:1-7','Ap 2:8-11','Ap 2:12-17','Ap 2:18-29'],a:0},
+  {q:'Qual cidade foi conquistada duas vezes por negligência de seus guardas?',opts:['Pérgamo','Tiatira','Éfeso','Sardes'],a:3},
+  {q:'Quantas igrejas têm apenas elogios, sem repreensão?',opts:['Uma','Duas','Três','Nenhuma'],a:1},
+  {q:'Qual cidade abrigava o templo de Ártemis, uma das 7 maravilhas do mundo?',opts:['Éfeso','Esmirna','Pérgamo','Sardes'],a:0},
+  {q:'Qual é a promessa ao vencedor de Esmirna?',opts:['Vestes brancas','Maná escondido','Coroa da vida e livramento da segunda morte','Porta aberta'],a:2},
+  {q:'Paulo morou em qual das sete cidades por 3 anos?',opts:['Esmirna','Éfeso','Pérgamo','Sardes'],a:1},
+  {q:'Qual a lição principal da igreja de Laodiceia?',opts:['Não temas o sofrimento','A indiferença espiritual é perigosa','Amor sem santidade falha','Cuidado com falsas doutrinas'],a:1},
+  {q:'Como Cristo se apresenta na carta a Pérgamo?',opts:['Com a espada afiada de dois gumes','Com os 7 espíritos','O Primeiro e o Último','Com olhos de fogo'],a:0},
+  {q:'Qual cidade era capital da província romana da Ásia?',opts:['Éfeso','Esmirna','Pérgamo','Sardes'],a:2},
+  {q:'O que Cristo aconselha a Laodiceia a comprar?',opts:['Maná e pedrinha branca','Ouro refinado, vestes brancas e colírio','Coroa da vida','Chave de Davi'],a:1},
+  {q:'Qual é a lição de Filadélfia?',opts:['A fidelidade vale mais que prosperidade','Deus abre portas que ninguém pode fechar','A aparência não substitui a vida real','Cuidado com a mistura fé e pecado'],a:1},
+  {q:'Qual cidade significa "amor fraternal"?',opts:['Éfeso','Esmirna','Pérgamo','Filadélfia'],a:3},
+  {q:'Qual é o número de igrejas no Apocalipse?',opts:['5','6','7','12'],a:2},
+  {q:'Qual é a referência da carta a Esmirna?',opts:['Ap 2:1-7','Ap 2:8-11','Ap 2:12-17','Ap 2:18-29'],a:1},
+  {q:'A vendedeira de púrpura Lídia era de qual cidade?',opts:['Éfeso','Esmirna','Tiatira','Filadélfia'],a:2},
+  {q:'Qual é a lição da igreja de Sardes?',opts:['Amor sem santidade falha','A aparência espiritual não substitui vida real','Cuidado com falsas doutrinas','Não basta servir, é preciso amar'],a:1},
+  {q:'Como Cristo se descreve na carta a Laodiceia?',opts:['O Primeiro e o Último','O Amém, testemunha fiel e verdadeira','Aquele com os 7 espíritos','O que tem a chave de Davi'],a:1},
+  {q:'Qual promessa é feita ao vencedor de Pérgamo?',opts:['Maná escondido e pedrinha branca','Coroa da vida','Vestes brancas','Árvore da vida'],a:0},
+  {q:'Qual cidade tinha o altar de Zeus em sua colina?',opts:['Éfeso','Esmirna','Pérgamo','Tiatira'],a:2},
+  {q:'Qual é a referência da carta a Tiatira?',opts:['Ap 2:1-7','Ap 2:8-11','Ap 2:12-17','Ap 2:18-29'],a:3},
+  {q:'Como Cristo se apresenta na carta a Tiatira?',opts:['O Amém','O Filho de Deus com olhos de fogo e pés de bronze','O Primeiro e o Último','Com a espada de dois gumes'],a:1},
+  {q:'Qual é a lição de Éfeso?',opts:['A indiferença espiritual é perigosa','Cuidado com a mistura','Não basta servir a Deus, é preciso amar a Deus','A fidelidade vale mais'],a:2},
+  {q:'Qual é a referência da carta a Pérgamo?',opts:['Ap 2:1-7','Ap 2:8-11','Ap 2:12-17','Ap 2:18-29'],a:2},
+  {q:'Em qual século foi escrito o Apocalipse?',opts:['Século I d.C.','Século II d.C.','Século III d.C.','Século IV d.C.'],a:0},
+  {q:'Qual é a referência da carta a Sardes?',opts:['Ap 3:1-6','Ap 3:7-13','Ap 3:14-22','Ap 2:18-29'],a:0},
+  {q:'Como Cristo se apresenta na carta a Sardes?',opts:['Com a espada afiada','Com os 7 espíritos de Deus e as 7 estrelas','O Primeiro e o Último','O Amém'],a:1},
+  {q:'Qual é a lição de Tiatira?',opts:['A aparência não substitui a vida','A indiferença espiritual é perigosa','A igreja precisa de amor, mas também de santidade','Deus abre portas'],a:2},
+  {q:'Qual cidade é associada ao maná escondido e à pedrinha branca?',opts:['Éfeso','Esmirna','Pérgamo','Tiatira'],a:2},
+  {q:'Qual é a promessa ao vencedor de Laodiceia?',opts:['Sentar com Cristo em seu trono','Maná escondido','Vestes brancas','Coroa da vida'],a:0},
+  {q:'Qual cidade é famosa por ter a grande biblioteca da antiguidade?',opts:['Éfeso','Esmirna','Pérgamo','Sardes'],a:2},
+  {q:'Qual mártir de Esmirna disse "86 anos o tenho servido e ele nunca me fez mal"?',opts:['Ignácio','Clemente','Policarpo','Justino'],a:2},
+  {q:'Qual é a lição de Esmirna?',opts:['A fidelidade vale mais que a prosperidade','Não basta servir, é preciso amar','A aparência não substitui a vida','Deus abre portas'],a:0},
+  {q:'Antipas é mencionado como mártir fiel em qual cidade?',opts:['Éfeso','Esmirna','Pérgamo','Tiatira'],a:2},
+  {q:'Qual cidade era famosa pela lã negra?',opts:['Pérgamo','Sardes','Tiatira','Laodiceia'],a:3},
+  {q:'Qual a lição de Pérgamo?',opts:['A indiferença espiritual é perigosa','Cuidado com a mistura entre fé e pecado','Não basta servir, é preciso amar','A fidelidade vale mais'],a:1},
+  {q:'Qual é a promessa ao vencedor de Tiatira?',opts:['Árvore da vida','Coroa da vida','Autoridade sobre as nações e a Estrela da Manhã','Vestes brancas'],a:2},
+  {q:'Qual cidade se localizava perto de Hierápolis e Colossos?',opts:['Éfeso','Esmirna','Sardes','Laodiceia'],a:3},
+  {q:'Como Cristo se apresenta na carta a Filadélfia?',opts:['O Santo, o Verdadeiro, com a chave de Davi','O Primeiro e o Último','O Amém','Filho de Deus'],a:0},
+  {q:'Qual é a promessa ao vencedor de Filadélfia?',opts:['Coroa da vida','Coluna no templo de Deus e nomes escritos','Maná escondido','Segunda morte não lhe fará dano'],a:1},
+  {q:'Em qual ordem as cartas são enviadas?',opts:['Éfeso,Esmirna,Pérgamo,Tiatira,Sardes,Filadélfia,Laodiceia','Laodiceia,Sardes,Filadélfia,Éfeso,Esmirna,Pérgamo,Tiatira','Pérgamo,Tiatira,Sardes,Filadélfia,Laodiceia,Éfeso,Esmirna','Aleatória'],a:0},
+  {q:'Qual é o número simbólico que representa completude na Bíblia?',opts:['3','7','12','40'],a:1},
+  {q:'Qual é a promessa ao vencedor de Éfeso?',opts:['Maná escondido','Coroa da vida','Comer da árvore da vida no paraíso','Vestes brancas'],a:2},
+  {q:'Qual é a referência da carta a Filadélfia?',opts:['Ap 3:1-6','Ap 3:7-13','Ap 3:14-22','Ap 2:18-29'],a:1},
+  {q:'O nome da cidade Filadélfia significa:',opts:['Amor a Deus','Amor fraternal','Amor eterno','Cidade da paz'],a:1},
+  {q:'Qual era o ambiente político de Pérgamo?',opts:['Porto comercial','Capital comercial','Capital da província romana da Ásia','Cidade militar'],a:2},
+  {q:'Qual é o último livro da Bíblia?',opts:['Malaquias','João','Apocalipse','Judas'],a:2},
+  {q:'Qual veste Cristo usa para se apresentar em Ap 1?',opts:['Manto real','Roupa de linho branco','Veste comprida com cinto de ouro','Armadura de guerra'],a:2},
+  {q:'O que é a "segunda morte" mencionada no Apocalipse?',opts:['Morte física','Morte espiritual','Julgamento eterno no lago de fogo','Morte na tribulação'],a:2},
+  {q:'Em Laodiceia, Cristo está fora da igreja. O que isso representa?',opts:['Punição divina','Igreja que excluiu Cristo de dentro','Julgamento iminente','Proteção divina'],a:1},
+  {q:'Qual é o objeto simbólico ligado à autoridade de Filadélfia?',opts:['Espada','Maná','Chave de Davi','Pedrinha branca'],a:2},
+  {q:'Qual elemento de Pérgamo symboliza aceitação divina e nova identidade?',opts:['Maná escondido','Pedrinha branca com nome novo','Coluna no templo','Vestes brancas'],a:1},
+  {q:'Qual cidade estava localizada numa região vulcânica?',opts:['Éfeso','Pérgamo','Filadélfia','Laodiceia'],a:2},
+  {q:'Qual imperador romano exilou João em Patmos?',opts:['Nero','Calígula','Domiciano','Trajano'],a:2},
+  {q:'O pergaminho (material de escrita) foi inventado em qual cidade?',opts:['Éfeso','Pérgamo','Sardes','Esmirna'],a:1},
+  {q:'Qual é o nome completo do livro?',opts:['Revelação de João','Apocalipse de João','O Último Livro','Visão de Patmos'],a:1},
+  {q:'O "Cordeiro" no Apocalipse representa quem?',opts:['João Batista','O povo de Deus','Jesus Cristo','O Espírito Santo'],a:2},
+  {q:'Qual cidade era centro comercial e tinha sindicatos com deuses patronos?',opts:['Éfeso','Pérgamo','Tiatira','Laodiceia'],a:2},
+  {q:'Qual é a mensagem central do Apocalipse?',opts:['O fim do mundo é iminente','Cristo venceu e os seus também vencerão','A tribulação é inevitável','Apenas os perfeitos serão salvos'],a:1},
+  {q:'Qual cidade ficava no vale do rio Hermos?',opts:['Éfeso','Tiatira','Sardes','Filadélfia'],a:2},
+  {q:'Quantas promessas Cristo faz aos vencedores ao total?',opts:['5','6','7','8'],a:2},
+  {q:'Qual é o símbolo do Espírito Santo nos sete espíritos de Deus?',opts:['Completude e perfeição do Espírito','Sete anjos guardiões','Sete profetas','Sete tribos de Israel'],a:0},
+  {q:'Em qual das sete cidades Paulo passou mais tempo?',opts:['Pérgamo','Tiatira','Filadélfia','Éfeso'],a:3},
+  {q:'Qual é o período aproximado da escrita do Apocalipse?',opts:['50–60 d.C.','70–80 d.C.','90–100 d.C.','100–120 d.C.'],a:2},
+  {q:'Qual é a ordem correta: Éfeso, ___, Pérgamo?',opts:['Esmirna','Sardes','Tiatira','Filadélfia'],a:0},
+  {q:'Qual é a ordem correta: ___, Sardes, Filadélfia?',opts:['Pérgamo','Tiatira','Éfeso','Laodiceia'],a:1},
+  {q:'Qual promessa ao vencedor envolve o livro da vida?',opts:['Éfeso','Esmirna','Tiatira','Sardes'],a:3},
+  {q:'Qual cidades formam o par de igrejas sem repreensão?',opts:['Éfeso e Tiatira','Esmirna e Filadélfia','Sardes e Pérgamo','Filadélfia e Laodiceia'],a:1},
+  {q:'Qual cidade tinha o maior porto comercial do Mediterrâneo Oriental?',opts:['Esmirna','Éfeso','Laodiceia','Pérgamo'],a:1},
+  {q:'O que Cristo diz para Laodiceia sobre sua condição real?',opts:['Rica e abençoada','Miserável, lamentável, pobre, cega e nua','Fria e endurecida','Morta e sem esperança'],a:1},
+  {q:'Qual é o número de Laodiceia na ordem das cartas?',opts:['5','6','7','4'],a:2},
+  {q:'Qual é o número de Éfeso na ordem das cartas?',opts:['1','2','3','4'],a:0},
+  {q:'O colírio que Cristo oferece a Laodiceia representa:',opts:['Cura física','Discernimento espiritual','Prosperidade material','Perdão dos pecados'],a:1},
+  {q:'Qual é o número de Esmirna na ordem das cartas?',opts:['1','2','3','4'],a:1},
+  {q:'Qual é o número de Pérgamo na ordem das cartas?',opts:['2','3','4','5'],a:1},
+  {q:'Qual cidade ficava na costa oeste da Turquia, atual İzmir?',opts:['Éfeso','Esmirna','Pérgamo','Tiatira'],a:1},
+  {q:'O que significa "maná escondido" prometido ao vencedor de Pérgamo?',opts:['Pão físico','Riqueza material','Sustento espiritual e comunhão íntima com Deus','Sabedoria divina'],a:2},
+  {q:'Qual é o número de Tiatira na ordem das cartas?',opts:['3','4','5','6'],a:1},
+  {q:'Qual é o número de Sardes na ordem das cartas?',opts:['4','5','6','7'],a:1},
+  {q:'Qual é o número de Filadélfia na ordem das cartas?',opts:['4','5','6','7'],a:2},
+  {q:'O "ouro refinado pelo fogo" que Cristo oferece a Laodiceia representa:',opts:['Riqueza material','Fé genuína provada no sofrimento','Poder espiritual','Conhecimento bíblico'],a:1},
+  {q:'Qual era o rei lendário de Sardes famoso por sua riqueza?',opts:['Alexandre','Creso','Dario','Xerxes'],a:1},
+  {q:'Qual carta menciona "sê vigilante e fortalece o que resta"?',opts:['Éfeso','Tiatira','Sardes','Filadélfia'],a:2},
+  {q:'Qual é o versículo mais famoso do Apocalipse ligado à intimidade com Cristo?',opts:['Ap 2:4','Ap 3:20','Ap 1:8','Ap 22:13'],a:1}
+];
+
+// ════════════════════════════════════
+//  KNOWLEDGE BASE FOR ASSISTANT
+// ════════════════════════════════════
+const knowledgeBase = [
+  { keys:['laodiceia','morna','nem fria nem quente'], ans:'A igreja de Laodiceia (Ap 3:14-22) era "nem fria nem quente" — morna. Isso representa indiferença espiritual. A cidade tinha água morna que chegava por aquedutos, perdendo o calor terapêutico das fontes. Cristo usa essa imagem local para descrever uma fé sem ardor. Apesar de rica materialmente, Laodiceia era espiritualmente "miserável, lamentável, pobre, cega e nua". A mensagem: a autossuficiência material pode cegar para a necessidade espiritual. Cristo bate à porta (Ap 3:20) — ainda há esperança!' },
+  { keys:['primeiro amor','éfeso','amor'], ans:'A igreja de Éfeso (Ap 2:1-7) havia perdido o primeiro amor. Era muito trabalhadora, ortodoxa e perseverante — mas havia perdido o fervor inicial por Cristo. O serviço continuava, mas a motivação havia mudado: de amor para obrigação. Cristo diz: "Lembra-te de onde caíste, arrepende-te e volta às primeiras obras." A lição: não basta servir a Deus — é preciso amar a Deus. O serviço sem amor é religiosidade vazia.' },
+  { keys:['autor','joão','quem escreveu','escrito'], ans:'O Apocalipse foi escrito pelo apóstolo João enquanto estava exilado na ilha de Patmos por volta de 95-96 d.C., durante o reinado do imperador romano Domiciano, que perseguia os cristãos. João era o único dos apóstolos que não havia sido martirizado. Em Patmos, ele recebeu visões do Cristo glorificado e foi instruído a escrever às sete igrejas da Ásia Menor.' },
+  { keys:['perseguida','esmirna','sofrimento','tribulação'], ans:'A igreja de Esmirna (Ap 2:8-11) era a igreja perseguida. Sofria tribulação e era pobre materialmente — mas Cristo diz: "tu és rico!" Era espiritualmente rica apesar da pobreza material. A cidade tinha uma grande comunidade judaica que frequentemente denunciava os cristãos. Cristo não faz nenhuma repreensão a Esmirna, apenas encoraja: "Sê fiel até a morte e dar-te-ei a coroa da vida."' },
+  { keys:['trono de satanás','pérgamo','satanás'], ans:'O "trono de Satanás" em Pérgamo (Ap 2:12-17) provavelmente se refere ao grande altar de Zeus que ficava na colina de Pérgamo, ou ao centro do culto ao imperador romano. Pérgamo era a capital da província romana da Ásia, e o culto imperial era obrigatório. Apesar disso, alguns cristãos permaneceram fiéis, incluindo Antipas, que foi martirizado. Cristo adverte contra a doutrina de Balaão e dos nicolaítas — falsas doutrinas que misturavam fé com imoralidade.' },
+  { keys:['estrela da manhã','tiatira'], ans:'A Estrela da Manhã é prometida ao vencedor de Tiatira (Ap 2:28). No Apocalipse 22:16, Cristo se identifica como "a Estrela da Manhã brilhante". Portanto, a promessa é a própria presença e intimidade com Cristo. Tiatira tinha amor e serviço crescentes, mas tolerava a falsa profetisa "Jezabel" que ensinava imoralidade e idolatria. A promessa da Estrela da Manhã é para aqueles que superam essa tolerância com o pecado.' },
+  { keys:['sardes','morta','aparência','vigilante'], ans:'A igreja de Sardes (Ap 3:1-6) tinha "nome de que vive, mas estava morta". Era a igreja da aparência religiosa sem vida real. As obras eram incompletas diante de Deus. Cristo manda: "Sê vigilante e fortalece o que resta." Sardes era uma cidade que havia sido conquistada duas vezes por inimigos por negligência dos guardas — a mensagem de vigilância ressoava fortemente localmente. Havia um remanescente fiel (poucas pessoas que não macularam suas vestes).' },
+  { keys:['filadélfia','porta aberta','pouca força','chave'], ans:'A igreja de Filadélfia (Ap 3:7-13) tinha "pouca força" mas guardou a Palavra de Cristo. Por isso, Cristo coloca diante dela "uma porta aberta que ninguém pode fechar". A "chave de Davi" que Cristo possui representa sua autoridade absoluta sobre as oportunidades. Filadélfia é uma das duas igrejas sem repreensão. A lição: Deus não procura os mais poderosos, mas os mais fiéis. Com poucos recursos e muita fidelidade, portas sobrenaturais se abrem.' },
+  { keys:['patmos','ilha','exílio'], ans:'A ilha de Patmos é uma pequena ilha grega no Mar Egeu, onde o apóstolo João foi exilado por volta de 95 d.C. pelo imperador romano Domiciano. Domiciano exigia ser adorado como "Senhor e Deus", e os cristãos que recusavam eram perseguidos. Em Patmos, longe de todos, João recebeu as visões do Apocalipse. A ilha tem cerca de 34 km² e hoje é um importante destino cristão de peregrinação.' },
+  { keys:['sete igrejas','por que sete','número sete'], ans:'O número sete na Bíblia representa perfeição e completude. As sete igrejas eram comunidades cristãs reais na Ásia Menor (atual Turquia), mas também representam a Igreja universal em todas as épocas. Cada uma representa um padrão de comunidade que pode ser identificado em qualquer época da história da Igreja. A ordem segue uma rota circular natural para um mensageiro saindo de Éfeso.' },
+  { keys:['cordeiro','cristo','jesus','apocalipse'], ans:'No Apocalipse, Jesus Cristo aparece principalmente como o "Cordeiro" (28 vezes) — referência a sua morte sacrificial. Mas também aparece como o Filho do Homem glorificado (Ap 1), o Leão de Judá, o Verbo de Deus, o Fiel e Verdadeiro, e o Rei dos Reis. O Apocalipse revela Cristo como Senhor soberano sobre toda a história, que venceu pelo sacrifício e que voltará para estabelecer seu reino eterno.' },
+  { keys:['segunda morte'], ans:'A "segunda morte" no Apocalipse refere-se ao julgamento eterno no lago de fogo (Ap 20:14), em contraste com a primeira morte, que é a morte física. O vencedor de Esmirna recebe a promessa de não sofrer dano da segunda morte. Aqueles cujos nomes estão no livro da vida não experimentam a segunda morte. É o estado eterno de separação de Deus — o julgamento final após a ressurreição.' },
+];
+
+// ════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ════════════════════════════════════
+//  BUILD HOME CHURCH CARDS
+// ════════════════════════════════════
+function buildHome() {
+  const grid = document.getElementById('churches-grid');
+  churches.forEach((c,i) => {
+    grid.innerHTML += `
+      <div class="church-card" onclick="showChurch(${i})" style="--church-color:${c.color}">
+        <div class="church-num">${c.num}ª IGREJA</div>
+        <div class="church-icon">${c.icon}</div>
+        <div class="church-name">${c.name}</div>
+        <div class="church-tag">${c.tag}</div>
+      </div>`;
+  });
+}
+
+// ════════════════════════════════════
+//  CHURCH DETAIL
+// ════════════════════════════════════
+function showChurch(i) {
+  const c = churches[i];
+  document.getElementById('church-detail-title').textContent = c.name;
+  document.getElementById('church-detail-content').innerHTML = `
+    <div class="church-hero" style="background:linear-gradient(180deg,rgba(${hexToRgb(c.color)},.15) 0%,transparent 100%)">
+      <div class="big-icon">${c.icon}</div>
+      <h1>${c.name}</h1>
+      <div class="ref">${c.ref}</div>
+      <div class="tag-pill">${c.tag}</div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'tab-texto')">Texto</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-contexto')">Contexto</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-aplicacao')">Aplicação</button>
+      <button class="tab-btn" onclick="switchTab(this,'tab-licao')">Lição</button>
+    </div>
+    <div id="tab-texto" class="tab-content active">
+      ${c.verses.map(v=>`<div class="verse-box">${v}</div>`).join('')}
+      <div class="content-card">
+        <h3>✦ Como Cristo se apresenta</h3>
+        <p>${c.chrDesc}</p>
+      </div>
+      <div class="content-card">
+        <h3>✅ Elogios</h3>
+        <p>${c.praises}</p>
+      </div>
+      ${c.reproofs!=='Nenhuma — esta é uma das duas igrejas sem repreensão.'&&c.reproofs!=='Nenhum — esta é a outra das duas igrejas sem repreensão.'?`
+      <div class="content-card">
+        <h3>⚠️ Repreensão</h3>
+        <p>${c.reproofs}</p>
+      </div>`:``}
+      <div class="content-card">
+        <h3>📣 Chamado</h3>
+        <p>${c.call}</p>
+      </div>
+      <div class="content-card">
+        <h3>🏆 Promessa ao Vencedor</h3>
+        <p>${c.promise}</p>
+      </div>
+    </div>
+    <div id="tab-contexto" class="tab-content">
+      <div class="content-card">
+        <h3>🏛️ A Cidade de ${c.name}</h3>
+        <p>${c.description}</p>
+      </div>
+      <div class="content-card">
+        <h3>📜 Contexto Histórico</h3>
+        <p>${c.historical}</p>
+      </div>
+    </div>
+    <div id="tab-aplicacao" class="tab-content">
+      <div class="content-card">
+        <h3>🔍 Reflexão Espiritual</h3>
+        <p>${c.spiritual}</p>
+      </div>
+    </div>
+    <div id="tab-licao" class="tab-content">
+      <div class="lesson-box">
+        <div class="lesson-label">➤ LIÇÃO PRINCIPAL</div>
+        <p>${c.lesson}</p>
+      </div>
     </div>
   `;
-});
-document.getElementById("formCadastro").addEventListener("submit", async function(e){
-  e.preventDefault();
+  showScreen('church-detail');
+}
 
-  const dados = {
-    nome: document.getElementById("nome").value,
-    responsavel: document.getElementById("responsavel").value,
-    email: document.getElementById("email").value,
-    endereco: document.getElementById("endereco").value,
-    info: document.getElementById("info").value,
-    criadoEm: new Date()
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+function switchTab(btn, tabId) {
+  btn.closest('.screen').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.closest('.screen').querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+// ════════════════════════════════════
+//  MAP
+// ════════════════════════════════════
+function buildMap() {
+  const list = document.getElementById('map-churches-list');
+
+  list.innerHTML = `
+    <div class="map-church-item">
+      <div style="width:100%">
+        <div class="map-church-name">Teste Éfeso</div>
+
+        <img src="./imagens/efeso.jpg"
+             style="width:100%; height:180px; object-fit:cover; border-radius:10px; display:block;">
+      </div>
+    </div>
+  `;
+}
+// ════════════════════════════════════
+//  QUIZ
+// ════════════════════════════════════
+let quizState = { questions:[], current:0, score:0, answered:false };
+
+function shuffle(arr) { return [...arr].sort(()=>Math.random()-.5); }
+
+function startQuiz() {
+  quizState.questions = shuffle(allQuestions).slice(0,20);
+  quizState.current = 0;
+  quizState.score = 0;
+  quizState.answered = false;
+  showScreen('quiz');
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const qs = quizState.questions;
+  if (quizState.current >= qs.length) { renderResult(); return; }
+  const q = qs[quizState.current];
+  document.getElementById('quiz-content').innerHTML = `
+    <div class="quiz-score-bar">
+      <div class="score">${quizState.score} pts</div>
+      <div class="progress">Pergunta ${quizState.current+1} de ${qs.length}</div>
+    </div>
+    <div class="quiz-q">
+      <div class="q-num">PERGUNTA ${quizState.current+1}</div>
+      <div class="q-text">${q.q}</div>
+    </div>
+    <div class="quiz-opts">
+      ${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})">${String.fromCharCode(65+i)}) ${o}</button>`).join('')}
+    </div>
+    <div id="quiz-feedback" style="display:none"></div>
+  `;
+}
+
+function answerQuiz(chosen) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = quizState.questions[quizState.current];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>o.disabled=true);
+  opts[q.a].classList.add('correct');
+  if (chosen !== q.a) { opts[chosen].classList.add('wrong'); }
+  else { quizState.score += 10; }
+  document.getElementById('quiz-feedback').style.display='block';
+  document.getElementById('quiz-feedback').innerHTML = `
+    <button class="quiz-next" onclick="nextQuestion()">${quizState.current+1 < quizState.questions.length ? 'Próxima →' : 'Ver Resultado'}</button>`;
+}
+
+function nextQuestion() {
+  quizState.current++;
+  quizState.answered = false;
+  renderQuiz();
+}
+
+function renderResult() {
+  const total = quizState.questions.length * 10;
+  const pct = Math.round(quizState.score/total*100);
+  const emoji = pct>=80?'🏆':pct>=60?'⭐':'📖';
+  const msg = pct>=80?'Excelente! Você domina o Apocalipse!':pct>=60?'Muito bom! Continue estudando!':'Continue estudando as cartas!';
+  document.getElementById('quiz-content').innerHTML = `
+    <div class="quiz-result">
+      <div class="result-icon">${emoji}</div>
+      <h2>Quiz Concluído!</h2>
+      <div class="final-score">${quizState.score}<span style="font-size:20px;color:var(--muted)">/${total}</span></div>
+      <p>${msg}</p>
+      <p style="margin-bottom:8px">${pct}% de acertos</p>
+      <button class="btn-restart" onclick="startQuiz()">Jogar Novamente</button>
+    </div>`;
+}
+
+// ════════════════════════════════════
+//  DEVOTIONALS
+// ════════════════════════════════════
+function buildDevotionals() {
+  const grid = document.getElementById('dev-grid');
+  devotionals.forEach((d,i) => {
+    grid.innerHTML += `
+      <div class="dev-card">
+        <div class="dev-card-header" onclick="toggleDev(${i})">
+          <div class="dev-card-icon">${d.icon}</div>
+          <div>
+            <div class="dev-card-title">${d.title}</div>
+            <div class="dev-card-subtitle">${d.church} • ${d.day}</div>
+          </div>
+        </div>
+        <div class="dev-card-body" id="dev-body-${i}">
+          <div class="dev-verse">${d.verse}</div>
+          <div class="dev-text">${d.text}</div>
+          <div class="dev-prayer">
+            <div class="dev-prayer-label">ORAÇÃO</div>
+            <p>${d.prayer}</p>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+function toggleDev(i) {
+  const body = document.getElementById(`dev-body-${i}`);
+  body.classList.toggle('open');
+}
+
+// ════════════════════════════════════
+//  AUDIO
+// ════════════════════════════════════
+function buildAudio() {
+  const list = document.getElementById('audio-list');
+  audioList.forEach((a,i) => {
+    list.innerHTML += `
+      <div class="audio-card">
+        <div class="audio-card-header">
+          <div class="audio-thumb">${a.icon}</div>
+          <div>
+            <div class="audio-title">${a.title}</div>
+            <div class="audio-duration">${a.church} · ${a.duration}</div>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">${a.desc}</p>
+        <div class="audio-player">
+          <div class="audio-progress" onclick="seekAudio(this,${i})">
+            <div class="audio-progress-bar" id="apbar-${i}" style="width:0%"></div>
+          </div>
+          <div class="audio-controls">
+            <button class="audio-btn" onclick="skipAudio(${i},-15)">⏪</button>
+            <button class="audio-play-btn" id="aplay-${i}" onclick="toggleAudio(${i})">▶</button>
+            <button class="audio-btn" onclick="skipAudio(${i},15)">⏩</button>
+          </div>
+          <div class="audio-time" id="atime-${i}">0:00 / ${a.duration}</div>
+        </div>
+      </div>`;
+  });
+}
+
+// ── AUDIO NARRATION SCRIPTS ──
+const audioScripts = [
+  `Introdução ao Apocalipse. O livro do Apocalipse, também chamado de Revelação, foi escrito pelo apóstolo João enquanto estava exilado na ilha de Patmos por volta de noventa e cinco depois de Cristo. O nome vem do grego apokalypsis, que significa revelação. A mensagem central é poderosa e cheia de esperança: Cristo venceu, e os seus também vencerão. O livro foi escrito para sete igrejas reais da Ásia Menor, que hoje corresponde à Turquia. Cada carta traz um retrato de Cristo, um diagnóstico espiritual e uma promessa gloriosa ao vencedor. O Apocalipse não é um livro para causar medo, mas para encher o coração de fé e esperança diante das tribulações.`,
+
+  `Éfeso — O Primeiro Amor. A primeira carta é dirigida à igreja de Éfeso, registrada em Apocalipse dois, versículos um ao sete. Éfeso era uma das maiores cidades do império romano, com cerca de duzentos e cinquenta mil habitantes. Abrigava o famoso templo de Ártemis, uma das sete maravilhas do mundo antigo. A igreja de Éfeso era trabalhadora, perseverante e intolerante ao erro. Havia testado falsos apóstolos e os rejeitado. Mas Cristo tem algo contra ela: abandonou o primeiro amor. O serviço continuava, a ortodoxia permanecia, mas o amor apaixonado por Deus havia esfriado. O remédio divino é simples e profundo: lembre-se de onde caíste, arrependa-te e volta às primeiras obras. A lição de Éfeso para nós hoje: não basta servir a Deus, é preciso amar a Deus. O serviço sem amor se torna religiosidade vazia.`,
+
+  `Esmirna — Fé na Perseguição. A segunda carta vai para Esmirna, em Apocalipse dois, versículos oito ao onze. Esmirna era uma bela cidade portuária chamada de a coroa da Ásia. A church sofria tribulação, era pobre materialmente e recebia calúnias de adversários. Mas Cristo declara algo surpreendente: tu és rico! A pobreza material não impedia a riqueza espiritual. Esta é uma das duas igrejas que não recebe nenhuma repreensão. Cristo encoraja: sê fiel até a morte, e dar-te-ei a coroa da vida. Policarpo, bispo de Esmirna e discípulo do apóstolo João, foi martirizado quando tinha oitenta e seis anos. Quando pressionado a negar Cristo, ele respondeu: oitenta e seis anos o tenho servido e ele nunca me fez mal algum. A lição de Esmirna: a fidelidade vale muito mais do que a prosperidade.`,
+
+  `Pérgamo — Discernimento Espiritual. A terceira carta é para Pérgamo, em Apocalipse dois, versículos doze ao dezessete. Pérgamo era a capital da província romana da Ásia, com uma enorme biblioteca de duzentos mil volumes e o grande altar de Zeus em sua colina. Cristo se refere a ela como o lugar onde está o trono de Satanás. Alguns cristãos permaneceram fiéis, incluindo Antipas, que foi martirizado por sua fé. Porém, outros haviam aceitado a doutrina de Balaão e dos nicolaítas, misturando a fé com imoralidade e idolatria. A falsidade não chegou anunciando que era falsa: chegou embrulhada em tolerância e abertura cultural. A lição de Pérgamo: cuidado com a mistura entre fé e pecado. Viver num ambiente hostil exige discernimento constante.`,
+
+  `Tiatira — Amor e Santidade. A quarta carta vai para Tiatira, em Apocalipse dois, versículos dezoito ao vinte e nove. Tiatira era conhecida por seus sindicatos comerciais, cada um com seus deuses patronos. A church tinha amor, fé, serviço e perseverança — e as últimas obras superavam as primeiras, sinal real de crescimento espiritual. Porém, tolerava uma falsa profetisa chamada Jezabel, que ensinava imoralidade e idolatria. A tolerância com o pecado foi confundida com amor. Mas o amor bíblico não é conivência: é correção misericordiosa, verdade falada com graça. Cristo promete ao vencedor a Estrela da Manhã, que é o próprio Cristo. A lição de Tiatira: a church precisa de amor, mas também de santidade.`,
+
+  `Sardes — Desperta! A quinta carta é para Sardes, em Apocalipse três, versículos um ao seis. Sardes foi uma das cidades mais ricas da antiguidade, capital do lendário rei Creso. A church tinha nome de viva, mas estava morta. As atividades religiosas continuavam, a reputação era boa, mas a vida real no Espírito havia se apagado. Cristo ordena: sê vigilante e fortalece o que resta, que estava para morrer. Há um remanescente fiel: poucas pessoas que não macularam suas vestes. Cristo promete ao vencedor vestes brancas e o nome escrito no livro da vida. A cidade de Sardes havia sido conquistada duas vezes por inimigos que escalaram suas muralhas por negligência dos guardas. Cristo usa essa história ao dizer: virei como ladrão. A lição de Sardes: a aparência espiritual não substitui a vida espiritual real.`,
+
+  `Filadélfia — A Porta Aberta. A sexta carta vai para Filadélfia, em Apocalipse três, versículos sete ao treze. Filadélfia significa amor fraternal. A church era pequena, tinha pouca força, mas havia guardado a Palavra de Cristo e não negado seu nome. Por isso, Cristo declara: coloquei diante de ti uma porta aberta que ninguém pode fechar. A chave de Davi que Cristo possui representa sua autoridade absoluta sobre as oportunidades da vida. Esta é a segunda church sem nenhuma repreensão. Cristo promete ao vencedor ser coluna no templo de Deus, com o nome de Deus, da Nova Jerusalém e o nome novo de Cristo. A lição de Filadélfia é poderosa: Deus não procura os mais poderosos, mas os mais fiéis. Com poucos recursos e muita fidelidade, portas sobrenaturais se abrem.`,
+
+  `Laodiceia — Nem Frio Nem Quente. A sétima e última carta vai para Laodiceia, em Apocalipse três, versículos quatorze ao vinte e dois. Laodiceia era uma cidade extremamente rica, centro banceiro e industrial, famosa pela lã negra, pelo colírio para olhos e pela água morna que chegava por aquedutos. Esta é a única church que não recebe nenhum elogio. Cristo diz: não és frio nem quente. Quero que fosses frio ou quente. Por seres morno, vomitar-te-ei da minha boca. A church dizia: estou rico, não preciso de nada. Mas Cristo vê a realidade: és miserável, lamentável, pobre, cego e nu. Então vem a imagem mais tocante do livro: Cristo do lado de fora da church, batendo à porta. Eis que estou à porta e bato. Ele não desistiu. Ainda bate. A lição de Laodiceia: a indiferença espiritual é o maior perigo para um cristão. Abre a porta antes que seja tarde.`,
+
+  `As Sete Igrejas Hoje. As mensagens às sete igrejas do Apocalipse não foram escritas apenas para comunidades do século primeiro. Elas são um espelho para a church em todas as épocas, incluindo a nossa. Você já perdeu o primeiro amor como Éfeso? Está enfrentando perseguição como Esmirna? Vive num ambiente hostil como Pérgamo? Tolera o que não deveria tolerar como Tiatira? Tem aparência de vivo mas está morto por dentro como Sardes? Está sendo fiel com pouca força como Filadélfia? Ou está morno e autossuficiente como Laodiceia? Cristo conhece cada church e cada coração. Ele elogia o que é genuíno, corrige o que está errado e convida ao arrependimento com misericórdia. A mensagem final do Apocalipse é de esperança: o Cordeiro venceu. E os que perseveram vencerão com ele.`,
+
+  `As Promessas ao Vencedor. Em cada uma das sete cartas, Cristo faz uma promessa especial ao vencedor. Estas sete promessas formam um tesouro espiritual incrível. Ao vencedor de Éfeso: comer da árvore da vida no paraíso de Deus. Ao vencedor de Esmirna: não sofrer dano da segunda morte, que é o julgamento eterno. Ao vencedor de Pérgamo: o maná escondido e uma pedrinha branca com um nome novo. Ao vencedor de Tiatira: autoridade sobre as nações e a Estrela da Manhã. Ao vencedor de Sardes: vestes brancas e o nome no livro da vida. Ao vencedor de Filadélfia: ser coluna no templo de Deus com nomes eternos gravados. E ao vencedor de Laodiceia: sentar com Cristo em seu trono. Estas promessas revelam que a vida cristã não termina na terra: ela culmina em comunhão eterna com Deus.`
+];
+
+let currentUtterance = null;
+let currentAudioIdx = null;
+let audioPos = {};
+let audioTimers = {};
+
+function toggleAudio(i) {
+  const btn = document.getElementById(`aplay-${i}`);
+  if (!('speechSynthesis' in window)) {
+    alert('Seu navegador não suporta síntese de voz. Tente o Google Chrome ou Microsoft Edge.');
+    return;
+  }
+
+  // Se já está tocando este áudio, pausar
+  if (currentAudioIdx === i && window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    currentAudioIdx = null;
+    btn.textContent = '▶';
+    clearInterval(audioTimers[i]);
+    return;
+  }
+
+  // Parar qualquer áudio em andamento
+  stopAllAudio();
+
+  // Iniciar narração
+  const script = audioScripts[i] || `${audioList[i].title}. ${audioList[i].desc}`;
+  const utter = new SpeechSynthesisUtterance(script);
+  utter.lang = 'pt-BR';
+  utter.rate = 0.92;
+  utter.pitch = 1.0;
+
+  // Tentar usar voz em português
+  const voices = window.speechSynthesis.getVoices();
+  const ptVoice = voices.find(v => v.lang.startsWith('pt')) || voices.find(v => v.lang.startsWith('pt-BR'));
+  if (ptVoice) utter.voice = ptVoice;
+
+  currentUtterance = utter;
+  currentAudioIdx = i;
+  btn.textContent = '⏸';
+  audioPos[i] = audioPos[i] || 0;
+
+  // Simular progresso visual enquanto fala
+  const estDur = script.length / 14; // ~14 chars por segundo
+  const startPos = audioPos[i];
+  const startTime = Date.now();
+
+  clearInterval(audioTimers[i]);
+  audioTimers[i] = setInterval(() => {
+    const elapsed = (Date.now() - startTime) / 1000;
+    audioPos[i] = Math.min(startPos + elapsed, estDur);
+    const bar = document.getElementById(`apbar-${i}`);
+    const time = document.getElementById(`atime-${i}`);
+    if (bar) bar.style.width = (audioPos[i] / estDur * 100) + '%';
+    if (time) time.textContent = fmtTime(Math.floor(audioPos[i])) + ' / ' + fmtTime(Math.floor(estDur));
+  }, 500);
+
+  utter.onend = () => {
+    clearInterval(audioTimers[i]);
+    audioPos[i] = 0;
+    currentAudioIdx = null;
+    const b = document.getElementById(`aplay-${i}`);
+    if (b) b.textContent = '▶';
+    const bar = document.getElementById(`apbar-${i}`);
+    if (bar) bar.style.width = '0%';
+    const time = document.getElementById(`atime-${i}`);
+    if (time) time.textContent = '0:00 / ' + fmtTime(Math.floor(estDur));
   };
 
-  await window.salvarCadastro(dados);
-  this.reset();
-});
-</script>
+  utter.onerror = () => {
+    clearInterval(audioTimers[i]);
+    currentAudioIdx = null;
+    const b = document.getElementById(`aplay-${i}`);
+    if (b) b.textContent = '▶';
+  };
 
+  window.speechSynthesis.speak(utter);
+}
+
+function stopAllAudio() {
+  window.speechSynthesis.cancel();
+  Object.keys(audioTimers).forEach(k => clearInterval(audioTimers[k]));
+  document.querySelectorAll('.audio-play-btn').forEach(b => b.textContent = '▶');
+  currentAudioIdx = null;
+}
+
+function skipAudio(i, sec) {
+  // Reinicia narração do mesmo áudio (Speech API não suporta seek)
+  if (currentAudioIdx === i) {
+    stopAllAudio();
+    setTimeout(() => toggleAudio(i), 100);
+  }
+}
+
+function seekAudio(el, i) {
+  if (currentAudioIdx === i) {
+    stopAllAudio();
+    setTimeout(() => toggleAudio(i), 100);
+  }
+}
+
+function parseDur(s) { const [m,sec] = s.split(':').map(Number); return m*60+sec; }
+function fmtTime(s) { const t = Math.floor(s); return `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}` }
+
+// Carregar vozes ao iniciar
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+// ════════════════════════════════════
+//  ASSISTANT
+// ════════════════════════════════════
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addMsg(text, 'user');
+  setTimeout(() => { addMsg(getAnswer(text), 'bot'); }, 600);
+}
+
+function sendQuick(q) { document.getElementById('chat-input').value = q; sendChat(); }
+
+function addMsg(text, type) {
+  const box = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `msg ${type}`;
+  if (type === 'bot') div.innerHTML = `<span class="bot-icon">✨</span>${text}`;
+  else div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function getAnswer(q) {
+  const lower = q.toLowerCase();
+  for (const entry of knowledgeBase) {
+    if (entry.keys.some(k => lower.includes(k))) return entry.ans;
+  }
+  for (const c of churches) {
+    if (lower.includes(c.name.toLowerCase())) {
+      return `A igreja de **${c.name}** está em ${c.ref}. ${c.tag}. Lição: ${c.lesson} Para mais detalhes, toque no card de ${c.name} na tela inicial!`;
+    }
+  }
+  if (lower.includes('quiz')||lower.includes('pergunta')) return 'O Quiz Bíblico tem 100 perguntas sobre as sete igrejas! Acesse "Quiz Bíblico" na tela inicial para testar seus conhecimentos. Cada rodada seleciona 20 perguntas aleatórias.';
+  if (lower.includes('devocional')||lower.includes('oração')) return 'Os devocionais trazem reflexões diárias para cada uma das sete igrejas, com texto meditativo e oração. Acesse "Devocionais" no menu principal!';
+  if (lower.includes('mapa')) return 'O mapa mostra a localização das sete igrejas na Ásia Menor (atual Turquia). Elas estavam numa rota circular de ~500 km, e a ordem das cartas segue o caminho de um mensageiro saindo de Éfeso.';
+  return 'Ótima pergunta! Posso ajudar com informações sobre as sete igrejas do Apocalipse (Éfeso, Esmirna, Pérgamo, Tiatira, Sardes, Filadélfia e Laodiceia), o autor João, a ilha de Patmos, simbologias e mais. Tente perguntar sobre uma das igrejas ou um tema específico!';
+}
+
+// ════════════════════════════════════
+//  INIT
+// ════════════════════════════════════
+buildHome();
+buildMap();
+buildDevotionals();
+buildAudio();
+</script>
+<section id="pdf-apocalipse" class="screen active">
+  <h2>📘 Apocalipse Explicado</h2>
+  <p>Clique no botão abaixo para abrir o estudo em PDF.</p>
+
+  <a href="Apocalipse explicado.pdf" target="_blank" class="botao-pdf">
+    Abrir PDF
+  </a>
+</section>
 </body>
 </html>
