@@ -388,19 +388,31 @@ function mostrarCadastros(){
 
   area.innerHTML = "";
 
-  lista.forEach(item => {
-    area.innerHTML += `
-      <div class="card">
-        <strong>${item.nome}</strong><br><br>
-        Responsável: ${item.responsavel}<br>
-        E-mail: ${item.email}<br>
-        Endereço: ${item.endereco}<br>
-        Informações: ${item.info}
-      </div><br>
-    `;
-  });
-}
+  lista.forEach((item, index) => {
+  area.innerHTML += `
+    <div class="card">
+      <strong>${item.nome}</strong><br><br>
+      Responsável: ${item.responsavel}<br>
+      E-mail: ${item.email}<br>
+      Endereço: ${item.endereco}<br>
+      Informações: ${item.info}<br><br>
 
+      <button onclick="excluirCadastro(${index})">
+        🗑 Excluir
+      </button>
+    </div><br>
+  `;
+});
+}
+function excluirCadastro(index){
+  let lista = JSON.parse(localStorage.getItem("denominacoes")) || [];
+
+  lista.splice(index, 1);
+
+  localStorage.setItem("denominacoes", JSON.stringify(lista));
+
+  mostrarCadastros();
+}
 document.getElementById("formCadastro").addEventListener("submit", function(e){
   e.preventDefault();
 
