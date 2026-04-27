@@ -311,8 +311,11 @@ Paracambi/RJ<br>
 <input type="email" id="email" placeholder="E-mail">
 <input type="text" id="endereco" placeholder="Endereço">
 <textarea id="info" rows="4" placeholder="Outras informações"></textarea>
+
 <button type="submit">Cadastrar</button>
 </form>
+
+<p id="mensagemCadastro"></p>
 
 </div>
 </section>
@@ -387,6 +390,27 @@ document.getElementById("formCadastro").addEventListener("submit", async functio
   this.reset();
 });
 </script>
+<script>
+document.getElementById("formCadastro").addEventListener("submit", function(e){
+  e.preventDefault();
 
+  const dados = {
+    nome: document.getElementById("nome").value,
+    responsavel: document.getElementById("responsavel").value,
+    email: document.getElementById("email").value,
+    endereco: document.getElementById("endereco").value,
+    info: document.getElementById("info").value
+  };
+
+  let lista = JSON.parse(localStorage.getItem("denominacoes")) || [];
+  lista.push(dados);
+  localStorage.setItem("denominacoes", JSON.stringify(lista));
+
+  document.getElementById("mensagemCadastro").innerHTML =
+    "✅ Cadastro realizado com sucesso!";
+
+  this.reset();
+});
+</script>
 </body>
 </html>
