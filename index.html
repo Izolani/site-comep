@@ -319,6 +319,14 @@ Paracambi/RJ<br>
 
 </div>
 </section>
+<section id="lista-cadastros">
+  <div class="box">
+    <h2>Denominações Cadastradas</h2>
+
+    <div id="listaDenominacoes"></div>
+
+  </div>
+</section>
 <footer>
 <p>© 2026 COMEP – Conselho de Ministros Evangélicos de Paracambi</p>
 </footer>
@@ -353,7 +361,6 @@ window.salvarCadastro = async function(dados){
 
 <script>
 const meses = [
-  {nome: "Maio", data: "04/05/2026"},
   {nome: "Junho", data: "01/06/2026"},
   {nome: "Julho", data: "06/07/2026"},
   {nome: "Agosto", data: "03/08/2026"},
@@ -374,7 +381,27 @@ meses.forEach(mes => {
     </div>
   `;
 });
-document.getElementById("formCadastro").addEventListener("submit", async function(e){
+
+function mostrarCadastros(){
+  let lista = JSON.parse(localStorage.getItem("denominacoes")) || [];
+  let area = document.getElementById("listaDenominacoes");
+
+  area.innerHTML = "";
+
+  lista.forEach(item => {
+    area.innerHTML += `
+      <div class="card">
+        <strong>${item.nome}</strong><br><br>
+        Responsável: ${item.responsavel}<br>
+        E-mail: ${item.email}<br>
+        Endereço: ${item.endereco}<br>
+        Informações: ${item.info}
+      </div><br>
+    `;
+  });
+}
+
+document.getElementById("formCadastro").addEventListener("submit", function(e){
   e.preventDefault();
 
   const dados = {
@@ -382,13 +409,22 @@ document.getElementById("formCadastro").addEventListener("submit", async functio
     responsavel: document.getElementById("responsavel").value,
     email: document.getElementById("email").value,
     endereco: document.getElementById("endereco").value,
-    info: document.getElementById("info").value,
-    criadoEm: new Date()
+    info: document.getElementById("info").value
   };
 
-  await window.salvarCadastro(dados);
+  let lista = JSON.parse(localStorage.getItem("denominacoes")) || [];
+  lista.push(dados);
+  localStorage.setItem("denominacoes", JSON.stringify(lista));
+
+  document.getElementById("mensagemCadastro").innerHTML =
+    "✅ Cadastro realizado com sucesso!";
+
   this.reset();
+
+  mostrarCadastros();
 });
+
+mostrarCadastros();
 </script>
 <script>
 document.getElementById("formCadastro").addEventListener("submit", function(e){
