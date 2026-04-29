@@ -185,6 +185,68 @@ display:block;
 .galeria-grid img:hover{
 transform:scale(1.03);
 }
+/* BANNER NOVO ESCRITÓRIO */
+
+.banner-novo{
+background:linear-gradient(135deg,#0A2E52,#1F5FA3);
+padding:40px 20px;
+color:white;
+overflow:hidden;
+}
+
+.banner-conteudo{
+max-width:1100px;
+margin:auto;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+align-items:center;
+}
+
+.banner-texto h2{
+font-size:2em;
+margin-bottom:15px;
+color:#FFD700;
+animation:pulse 2s infinite;
+}
+
+.banner-texto p{
+font-size:1.3em;
+line-height:1.5;
+margin-bottom:15px;
+}
+
+.banner-texto span{
+font-size:1em;
+opacity:0.9;
+}
+
+.banner-imagem img{
+width:100%;
+max-width:420px;
+border-radius:15px;
+box-shadow:0 8px 20px rgba(0,0,0,0.25);
+animation:flutuar 3s ease-in-out infinite;
+}
+
+@keyframes flutuar{
+0%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0);}
+}
+
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.05);}
+100%{transform:scale(1);}
+}
+
+@media(max-width:768px){
+.banner-conteudo{
+grid-template-columns:1fr;
+text-align:center;
+}
+}
 </style>
 </head>
 
@@ -205,7 +267,26 @@ transform:scale(1.03);
 <a href="#redes">Redes</a>
 <a href="#contato">Contato</a>
 </nav>
+<section class="banner-novo">
+  <div class="banner-conteudo">
 
+    <div class="banner-texto">
+      <h2>📢 Em Breve!</h2>
+
+      <p>
+        O Conselho de Ministros Evangélicos de Paracambi (COMEP)
+        estará em breve em um novo escritório!
+      </p>
+
+      <span>Mais estrutura para servir a cidade e as igrejas.</span>
+    </div>
+
+    <div class="banner-imagem">
+      <img src="imagens/novo-escritorio.png" alt="Novo Escritório COMEP">
+    </div>
+
+  </div>
+</section>
 <div class="banner">
 <h1>Conselho de Ministros Evangélicos de Paracambi</h1>
 <p>Unindo pastores e igrejas para o avanço do Reino de Deus</p>
