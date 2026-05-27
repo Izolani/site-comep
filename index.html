@@ -380,7 +380,47 @@ Paracambi/RJ<br>
 <div id="agenda-auto"></div>
 
 </section>
+<section id="reuniao-junho">
 
+  <div class="box">
+
+    <h2>📅 Reunião COMEP – Junho 2026</h2>
+
+    <div class="card">
+
+      <h3>⛪ Igreja Evangélica Casa de Deus</h3>
+
+      <p>
+        📍 Travessa Pastor Josué Antonio de Lima, 64<br>
+        Lages – Paracambi/RJ<br>
+        CEP: 26.600-000
+      </p>
+
+      <hr>
+
+      <h3>🕒 Cronograma Oficial</h3>
+
+      <p>
+
+        ☕ 19:00 hrs – Café<br><br>
+
+        🎶 19:30 hrs – Louvor<br><br>
+
+        🙏 19:40 hrs – Oração e Ceia<br><br>
+
+        📖 20:10 hrs – Devocional<br><br>
+
+        📋 20:30 hrs – Expediente<br><br>
+
+        ✅ 21:00 hrs – Encerramento
+
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
 <section id="galeria">
   <div class="box">
     <h2>Galeria</h2>
@@ -479,7 +519,12 @@ window.salvarCadastro = async function(dados){
 
 <script>
 const meses = [
-  {nome: "Junho", data: "01/06/2026"},
+  {
+  nome: "Junho",
+  data: "01/06/2026",
+  horario: "19:00 hrs",
+  anfitria: "Igreja Evangélica Casa de Deus"
+},
   {nome: "Julho", data: "06/07/2026"},
   {nome: "Agosto", data: "03/08/2026"},
   {nome: "Setembro", data: "14/09/2026"},
@@ -492,12 +537,18 @@ const container = document.getElementById("agenda-auto");
 
 meses.forEach(mes => {
   container.innerHTML += `
-    <div class="card">
-      <strong>${mes.nome} 2026</strong><br><br>
-      Data: ${mes.data}<br>
-      Horário: 19:30 hrs
-    </div>
-  `;
+  <div class="card">
+
+    <strong>${mes.nome} 2026</strong><br><br>
+
+    📅 Data: ${mes.data}<br>
+
+    🕒 Horário: ${mes.horario || "19:00 hrs"}<br><br>
+
+    ${mes.anfitria ? "⛪ Igreja Anfitriã: " + mes.anfitria : ""}
+
+  </div>
+`;
 });
 
 function mostrarCadastros(){
