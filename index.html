@@ -662,27 +662,5 @@ document.getElementById("formCadastro").addEventListener("submit", function(e){
 
 mostrarCadastros();
 </script>
-<script>
-document.getElementById("formCadastro").addEventListener("submit", function(e){
-  e.preventDefault();
-
-  const dados = {
-    nome: document.getElementById("nome").value,
-    responsavel: document.getElementById("responsavel").value,
-    email: document.getElementById("email").value,
-    endereco: document.getElementById("endereco").value,
-    info: document.getElementById("info").value
-  };
-
-  let lista = JSON.parse(localStorage.getItem("denominacoes")) || [];
-  lista.push(dados);
-  localStorage.setItem("denominacoes", JSON.stringify(lista));
-
-  document.getElementById("mensagemCadastro").innerHTML =
-    "✅ Cadastro realizado com sucesso!";
-
-  this.reset();
-});
-</script>
 </body>
 </html>
