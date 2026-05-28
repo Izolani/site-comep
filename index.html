@@ -619,6 +619,14 @@ function mostrarCadastros(){
 });
 }
 function excluirCadastro(index){
+
+  const senha = prompt("Digite a senha de administrador:");
+
+  if(senha !== "COMEP2026"){
+    alert("❌ Senha incorreta!");
+    return;
+  }
+
   let lista = JSON.parse(localStorage.getItem("denominacoes")) || [];
 
   lista.splice(index, 1);
@@ -626,6 +634,8 @@ function excluirCadastro(index){
   localStorage.setItem("denominacoes", JSON.stringify(lista));
 
   mostrarCadastros();
+
+  alert("✅ Cadastro excluído com sucesso!");
 }
 document.getElementById("formCadastro").addEventListener("submit", function(e){
   e.preventDefault();
