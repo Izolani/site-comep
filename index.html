@@ -245,9 +245,37 @@ animation:flutuar 3s ease-in-out infinite;
 .banner-conteudo{
 grid-template-columns:1fr;
 text-align:center;
+
 }
 }
+
+/* IGREJAS CADASTRADAS */
+
+.lista-igrejas{
+margin-top:20px;
+}
+
+.lista-igrejas .card{
+background:#F8FBFF;
+border-left:6px solid #D4AF37;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.08);
+transition:0.3s;
+}
+
+.lista-igrejas .card:hover{
+transform:translateY(-3px);
+}
+
+.lista-igrejas strong{
+font-size:1.2em;
+color:#0A2E52;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -482,13 +510,20 @@ CEP: 26.600-000
 
 </div>
 </section>
-<section id="lista-cadastros">
-  <div class="box">
-    <h2>Denominações Cadastradas</h2>
+<section id="igrejas-cadastradas">
 
-    <div id="listaDenominacoes"></div>
+  <div class="box">
+
+    <h2>⛪ Igrejas Cadastradas</h2>
+
+    <p>
+      Relação das igrejas e denominações cadastradas no sistema do COMEP.
+    </p>
+
+    <div id="listaDenominacoes" class="lista-igrejas"></div>
 
   </div>
+
 </section>
 <footer>
 <p>© 2026 COMEP – Conselho de Ministros Evangélicos de Paracambi</p>
@@ -565,17 +600,22 @@ function mostrarCadastros(){
   lista.forEach((item, index) => {
   area.innerHTML += `
     <div class="card">
-      <strong>${item.nome}</strong><br><br>
-      Responsável: ${item.responsavel}<br>
-      E-mail: ${item.email}<br>
-      Endereço: ${item.endereco}<br>
-      Informações: ${item.info}<br><br>
 
-      <button onclick="excluirCadastro(${index})">
-        🗑 Excluir
-      </button>
-    </div><br>
-  `;
+  <strong>⛪ ${item.nome}</strong><br><br>
+
+  👤 Responsável: ${item.responsavel}<br><br>
+
+  📧 E-mail: ${item.email}<br><br>
+
+  📍 Endereço: ${item.endereco}<br><br>
+
+  📝 Informações: ${item.info}<br><br>
+
+  <button onclick="excluirCadastro(${index})">
+    🗑 Excluir
+  </button>
+
+</div>  `;
 });
 }
 function excluirCadastro(index){
