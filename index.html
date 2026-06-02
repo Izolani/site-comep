@@ -649,12 +649,47 @@ const meses = [
   horario: "19:00 hrs",
   anfitria: "Igreja Evangélica Casa de Deus"
 },
-  {nome: "Julho", data: "06/07/2026"},
-  {nome: "Agosto", data: "03/08/2026"},
-  {nome: "Setembro", data: "14/09/2026"},
-  {nome: "Outubro", data: "05/10/2026"},
-  {nome: "Novembro", data: "09/11/2026"},
-  {nome: "Dezembro", data: "07/12/2026"}
+{
+  nome: "Julho",
+  data: "06/07/2026",
+  horario: "19:00 hrs",
+  local: "Sede do COMEP"
+},
+
+{
+  nome: "Agosto",
+  data: "03/08/2026",
+  horario: "19:00 hrs",
+  local: "Sede do COMEP"
+},
+
+{
+  nome: "Setembro",
+  data: "14/09/2026",
+  horario: "19:00 hrs",
+  local: "Sede do COMEP"
+},
+
+{
+  nome: "Outubro",
+  data: "05/10/2026",
+  horario: "19:00 hrs",
+  local: "Sede do COMEP"
+},
+
+{
+  nome: "Novembro",
+  data: "09/11/2026",
+  horario: "19:00 hrs",
+  local: "Sede do COMEP"
+},
+
+{
+  nome: "Dezembro",
+  data: "07/12/2026",
+  horario: "19:00 hrs",
+  local: "Sede do COMEP"
+}
 ];
 
 const container = document.getElementById("agenda-auto");
@@ -665,13 +700,24 @@ meses.forEach(mes => {
 
     <strong>${mes.nome} 2026</strong><br><br>
 
-    📅 Data: ${mes.data}<br>
+📅 Data: ${mes.data}<br>
 
-    🕒 Horário: ${mes.horario || "19:00 hrs"}<br><br>
+🕒 Horário: ${mes.horario || "19:00 hrs"}<br><br>
 
-    ${mes.anfitria ? "⛪ Igreja Anfitriã: " + mes.anfitria : ""}
+${mes.local ? "📍 Local: " + mes.local + "<br><br>" : ""}
 
-  </div>
+<strong>🕒 Cronograma</strong><br><br>
+
+🕖 19h - Café<br>
+🕢 19:30h - Louvor<br>
+🙏 19:40h - Oração e Ceia<br>
+📖 20:10h - Devocional<br>
+📝 20:30h - Expediente<br>
+✅ 21:00h - Encerramento<br><br>
+
+${mes.anfitria ? "⛪ Igreja Anfitriã: " + mes.anfitria : ""}
+
+</div>
 `;
 });
 
