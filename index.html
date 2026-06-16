@@ -201,8 +201,9 @@ color:white;
 overflow:hidden;
 }
 .banner-conteudo{
-max-width:1600px;
-margin:auto;
+width:100%;
+max-width:none;
+margin:0;
 display:block;
 }
 .banner-texto h2{
@@ -225,12 +226,10 @@ opacity:0.9;
 
 .banner-imagem img{
 width:100%;
-max-width:420px;
-border-radius:15px;
-box-shadow:0 8px 20px rgba(0,0,0,0.25);
-animation:flutuar 3s ease-in-out infinite;
+max-width:1400px;
+border-radius:20px;
+box-shadow:0 8px 25px rgba(0,0,0,0.35);
 }
-
 @keyframes flutuar{
 0%{transform:translateY(0);}
 50%{transform:translateY(-10px);}
@@ -318,12 +317,13 @@ line-height:1.6;
 <section class="banner-novo">
   <div class="banner-conteudo">
 
- <div class="banner-imagem" style="width:100%;">
+ <div class="banner-imagem" style="width:100%; text-align:center;">
 
-  <img
+  
+    <img
     src="imagens/banner-sede-comep.jpeg"
     alt="Inauguração da Sede do COMEP"
-    style="width:100%; border-radius:20px; box-shadow:0 8px 25px rgba(0,0,0,0.35);"
+    style="width:95vw; max-width:none; border-radius:20px; box-shadow:0 8px 25px rgba(0,0,0,0.35);"
 >
 </div>
   </div>
