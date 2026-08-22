@@ -769,45 +769,18 @@ const meses = [
 },
 {
   nome: "Julho",
-  data: "06/07/2026",
-  horario: "19:00 hrs",
+  data: "18/07/2026",
+  horario: "09:00 hrs",
   local: "Sede do COMEP"
 },
 
 {
   nome: "Agosto",
-  data: "03/08/2026",
-  horario: "19:00 hrs",
-  local: "Sede do COMEP"
-},
-
-{
-  nome: "Setembro",
-  data: "14/09/2026",
-  horario: "19:00 hrs",
-  local: "Sede do COMEP"
-},
-
-{
-  nome: "Outubro",
-  data: "05/10/2026",
-  horario: "19:00 hrs",
-  local: "Sede do COMEP"
-},
-
-{
-  nome: "Novembro",
-  data: "09/11/2026",
-  horario: "19:00 hrs",
-  local: "Sede do COMEP"
-},
-
-{
-  nome: "Dezembro",
-  data: "07/12/2026",
-  horario: "19:00 hrs",
+  data: "29/08/2026",
+  horario: "09:00 hrs",
   local: "Sede do COMEP"
 }
+
 ];
 
 const container = document.getElementById("agenda-auto");
@@ -824,14 +797,6 @@ meses.forEach(mes => {
 
 ${mes.local ? "📍 Local: " + mes.local + "<br><br>" : ""}
 
-<strong>🕒 Cronograma</strong><br><br>
-
-🕖 19h - Café<br>
-🕢 19:30h - Louvor<br>
-🙏 19:40h - Oração e Ceia<br>
-📖 20:10h - Devocional<br>
-📝 20:30h - Expediente<br>
-✅ 21:00h - Encerramento<br><br>
 
 ${mes.anfitria ? "⛪ Igreja Anfitriã: " + mes.anfitria : ""}
 
