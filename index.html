@@ -793,72 +793,28 @@ function mostrarAgendaAnterior(){
 <!-- FIM FIREBASE -->
 
 <script>
-const meses = [
-  
-{
-  nome: "Julho",
-  data: "18/07/2026",
-  horario: "09:00 hrs",
-  local: "Sede do COMEP"
-},
+function mostrarAgendaAnterior(){
 
-{
-  nome: "Agosto",
-  data: "29/08/2026",
-  horario: "09:00 hrs",
-  local: "Sede do COMEP"
-}
+  const area = document.getElementById("agenda-anterior");
+  const botao = document.querySelector(".botao-agenda");
 
-];
+  if(area.style.display === "none"){
 
-const container = document.getElementById("agenda-auto");
+    area.style.display = "block";
 
-let agendaAtual = "";
-let agendaAnterior = "";
+    botao.innerHTML =
+      "🔼 Ocultar agenda das reuniões anteriores";
 
-meses.forEach(mes => {
-
-  const card = `
-    <div class="card">
-
-      <strong>${mes.nome} 2026</strong><br><br>
-
-      📅 Data: ${mes.data}<br>
-
-      🕒 Horário: ${mes.horario || "19:00 hrs"}<br><br>
-
-      ${mes.local ? "📍 Local: " + mes.local + "<br><br>" : ""}
-
-      ${mes.anfitria ? "⛪ Igreja Anfitriã: " + mes.anfitria : ""}
-
-    </div>
-  `;
-
-  if(mes.nome === "Agosto"){
-    agendaAtual += card;
   } else {
-    agendaAnterior += card;
+
+    area.style.display = "none";
+
+    botao.innerHTML =
+      "📅 Veja a agenda das reuniões anteriores";
+
   }
 
-});
-
-container.innerHTML = `
-
-  <div id="agenda-atual">
-    ${agendaAtual}
-  </div>
-
-  <button
-    class="botao-agenda"
-    onclick="mostrarAgendaAnterior()">
-    📅 Veja a agenda das reuniões anteriores
-  </button>
-
-  <div id="agenda-anterior" style="display:none;">
-    ${agendaAnterior}
-  </div>
-
-`;
+}
 function mostrarCadastros(){
   let lista = JSON.parse(localStorage.getItem("denominacoes")) || [];
   let area = document.getElementById("listaDenominacoes");
