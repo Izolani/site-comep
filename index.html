@@ -329,6 +329,24 @@ color:#0A2E52;
   color:#0A2E52;
   margin-top:0;
 }
+.botao-agenda{
+  display:block;
+  margin:25px auto;
+  padding:12px 24px;
+  background:#0A2E52;
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-size:1em;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+.botao-agenda:hover{
+  background:#D4AF37;
+  color:#0A2E52;
+}
 
 </style>
 </style>
@@ -353,20 +371,19 @@ color:#0A2E52;
 <a href="#contato">Contato</a>
 </nav>
 <section class="banner-novo">
-
   <div class="banner-conteudo">
 
     <div class="banner-imagem" style="width:100%; text-align:center;">
 
       <img
-        src="imagens/banner-reuniao-cafe.png"
-        alt="Reunião com Café do COMEP"
-        style="width:95vw; max-width:none; border-radius:20px; box-shadow:0 8px 25px rgba(0,0,0,0.35);">
+        src="imagens/banner-cafe-pastores.jpeg"
+        alt="Café com Pastores do COMEP"
+        style="width:95vw; max-width:none; border-radius:20px; box-shadow:0 8px 25px rgba(0,0,0,0.35);"
+      >
 
     </div>
 
   </div>
-
 </section>
 <section id="inauguracao-sede">
 
@@ -484,98 +501,106 @@ border-left:5px solid #D4AF37;
 </section>
 
 <section id="agenda">
-<div class="box">
-
-<h2>
-  AGENDA 2026<br>
-  REUNIÕES
-</h2>
-<!-- ABRIL COMPLETO -->
-<div class="card">
-
-<strong>Abril 2026</strong><br><br>
-
-Data: 06/04/2026<br>
-Horário: 19:30 hrs<br><br>
-
-<strong>Cronograma:</strong><br>
-🕖 19h - Café<br>
-🕢 19:30h - Louvor<br>
-🙏 19:40h - Oração e Ceia<br>
-📖 20:10h - Devocional<br>
-📝 20:30h - Expediente<br>
-✅ 21:00h - Encerramento<br><br>
-<strong>Igreja Anfitriã:</strong><br>
-Comunidade Apostólica Novos Amigos<br>
-Rua Deputado Romeu Natal, 369<br>
-Lages – Paracambi/RJ<br><br>
-
-</div>
-<div class="card">
-
-<strong>Maio 2026</strong><br><br>
-
-Data: 04/05/2026<br>
-Horário: 19:00 hrs<br><br>
-
-<strong>Cronograma:</strong><br>
-🕖 19h - Café<br>
-🕢 19:30h - Louvor<br>
-🙏 19:40h - Oração e Ceia<br>
-📖 20:10h - Devocional<br>
-📝 20:30h - Expediente<br>
-✅ 21:00h - Encerramento<br><br>
-
-<strong>Igreja Anfitriã:</strong><br>
-Igreja Cristã Nova Vida de Paracambi<br>
-Rua Américo Rodrigues Pereira, 370<br>
-Paracambi/RJ<br>
-
-</div>
-<div id="agenda-auto"></div>
-
-</section>
-<section id="reuniao-junho">
 
   <div class="box">
 
-    <h2>📅 Reunião COMEP – Junho 2026</h2>
+    <h2>
+      AGENDA 2026<br>
+      REUNIÕES
+    </h2>
 
-    <div class="card">
+    <!-- REUNIÃO DO MÊS ATUAL -->
 
-     <h3>🕒 Cronograma Oficial</h3>
+    <div id="agenda-atual">
 
-<p>
+      <div class="card">
 
-🕖 19h - Café<br><br>
+        <strong>Agosto 2026</strong><br><br>
 
-🕢 19:30h - Louvor<br><br>
+        📅 Data: 29/08/2026<br>
 
-🙏 19:40h - Oração e Ceia<br><br>
+        🕒 Horário: 09:00 hrs<br><br>
 
-📖 20:10h - Devocional<br><br>
+        📍 Local: Sede do COMEP
 
-📝 20:30h - Expediente<br><br>
+      </div>
 
-✅ 21:00h - Encerramento
+    </div>
 
-</p>
+    <!-- BOTÃO PARA REUNIÕES ANTERIORES -->
 
-<hr>
+    <button
+      class="botao-agenda"
+      onclick="mostrarAgendaAnterior()">
 
-<h3>⛪ Igreja Anfitriã</h3>
+      📅 Veja a agenda das reuniões anteriores
 
-<p>
+    </button>
 
-Igreja Evangélica Casa de Deus<br><br>
+    <!-- REUNIÕES ANTERIORES -->
 
-📍 Travessa Pastor Josué Antonio de Lima, 64<br>
+    <div id="agenda-anterior" style="display:none;">
 
-Lages – Paracambi/RJ<br>
+      <div class="card">
 
-CEP: 26.600-000
+        <strong>Abril 2026</strong><br><br>
 
-</p>
+        📅 Data: 06/04/2026<br>
+
+        🕒 Horário: 19:30 hrs<br><br>
+
+        <strong>Cronograma:</strong><br>
+
+        🕖 19h - Café<br>
+        🕢 19:30h - Louvor<br>
+        🙏 19:40h - Oração e Ceia<br>
+        📖 20:10h - Devocional<br>
+        📝 20:30h - Expediente<br>
+        ✅ 21:00h - Encerramento<br><br>
+
+        <strong>Igreja Anfitriã:</strong><br>
+        Comunidade Apostólica Novos Amigos<br>
+        Rua Deputado Romeu Natal, 369<br>
+        Lages – Paracambi/RJ
+
+      </div>
+
+      <div class="card">
+
+        <strong>Maio 2026</strong><br><br>
+
+        📅 Data: 04/05/2026<br>
+
+        🕒 Horário: 19:00 hrs<br><br>
+
+        <strong>Cronograma:</strong><br>
+
+        🕖 19h - Café<br>
+        🕢 19:30h - Louvor<br>
+        🙏 19:40h - Oração e Ceia<br>
+        📖 20:10h - Devocional<br>
+        📝 20:30h - Expediente<br>
+        ✅ 21:00h - Encerramento<br><br>
+
+        <strong>Igreja Anfitriã:</strong><br>
+        Igreja Cristã Nova Vida de Paracambi<br>
+        Rua Américo Rodrigues Pereira, 370<br>
+        Paracambi/RJ
+
+      </div>
+
+      <div class="card">
+
+        <strong>Julho 2026</strong><br><br>
+
+        📅 Data: 18/07/2026<br>
+
+        🕒 Horário: 09:00 hrs<br><br>
+
+        📍 Local: Sede do COMEP
+
+      </div>
+
     </div>
 
   </div>
@@ -756,6 +781,28 @@ window.salvarCadastro = async function(dados){
     alert("Erro ao enviar cadastro");
   }
 }
+function mostrarAgendaAnterior(){
+
+  const area = document.getElementById("agenda-anterior");
+  const botao = document.querySelector(".botao-agenda");
+
+  if(area.style.display === "none"){
+
+    area.style.display = "block";
+
+    botao.innerHTML =
+      "🔼 Ocultar agenda das reuniões anteriores";
+
+  } else {
+
+    area.style.display = "none";
+
+    botao.innerHTML =
+      "📅 Veja a agenda das reuniões anteriores";
+
+  }
+
+}
 </script>
 <!-- FIM FIREBASE -->
 
@@ -780,25 +827,52 @@ const meses = [
 
 const container = document.getElementById("agenda-auto");
 
+let agendaAtual = "";
+let agendaAnterior = "";
+
 meses.forEach(mes => {
-  container.innerHTML += `
-  <div class="card">
 
-    <strong>${mes.nome} 2026</strong><br><br>
+  const card = `
+    <div class="card">
 
-📅 Data: ${mes.data}<br>
+      <strong>${mes.nome} 2026</strong><br><br>
 
-🕒 Horário: ${mes.horario || "19:00 hrs"}<br><br>
+      📅 Data: ${mes.data}<br>
 
-${mes.local ? "📍 Local: " + mes.local + "<br><br>" : ""}
+      🕒 Horário: ${mes.horario || "19:00 hrs"}<br><br>
 
+      ${mes.local ? "📍 Local: " + mes.local + "<br><br>" : ""}
 
-${mes.anfitria ? "⛪ Igreja Anfitriã: " + mes.anfitria : ""}
+      ${mes.anfitria ? "⛪ Igreja Anfitriã: " + mes.anfitria : ""}
 
-</div>
-`;
+    </div>
+  `;
+
+  if(mes.nome === "Agosto"){
+    agendaAtual += card;
+  } else {
+    agendaAnterior += card;
+  }
+
 });
 
+container.innerHTML = `
+
+  <div id="agenda-atual">
+    ${agendaAtual}
+  </div>
+
+  <button
+    class="botao-agenda"
+    onclick="mostrarAgendaAnterior()">
+    📅 Veja a agenda das reuniões anteriores
+  </button>
+
+  <div id="agenda-anterior" style="display:none;">
+    ${agendaAnterior}
+  </div>
+
+`;
 function mostrarCadastros(){
   let lista = JSON.parse(localStorage.getItem("denominacoes")) || [];
   let area = document.getElementById("listaDenominacoes");
