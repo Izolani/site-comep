@@ -422,6 +422,14 @@ box-shadow:0 2px 8px rgba(0,0,0,0.08);
 </p>
 
   <h3>📸 Galeria da Inauguração da Sede</h3>
+<button
+  class="botao-galeria"
+  onclick="mostrarGaleriaInauguracao()">
+
+  📸 Veja as fotos da inauguração
+
+</button>
+  <div id="galeria-inauguracao" style="display:none;">
 
   <div class="galeria-grid">
 
@@ -449,7 +457,9 @@ box-shadow:0 2px 8px rgba(0,0,0,0.08);
     <img src="imagens-inauguracao/foto22.jpeg" alt="Inauguração COMEP">
     <img src="imagens-inauguracao/foto23.jpeg" alt="Inauguração COMEP">
     <img src="imagens-inauguracao/foto24.jpeg" alt="Inauguração COMEP">
+  </div>
 
+</div>
   </div>
 
 </div>
@@ -633,8 +643,16 @@ box-shadow:0 2px 8px rgba(0,0,0,0.08);
 
     <div class="galeria-bloco">
       <h3>Reunião de Abril – 06/04/2026</h3>
+<button
+  class="botao-galeria"
+  onclick="mostrarGaleriaAbril()">
 
-      <div class="galeria-grid">
+  📸 Veja as fotos da reunião de abril
+
+</button>
+     <div id="galeria-abril" style="display:none;">
+
+  <div class="galeria-grid">
         <img src="imagens/abril1.jpg" alt="Reunião Abril">
         <img src="imagens/abril2.jpg" alt="Reunião Abril">
         <img src="imagens/abril3.jpg" alt="Reunião Abril">
@@ -650,6 +668,15 @@ box-shadow:0 2px 8px rgba(0,0,0,0.08);
     </div>
 <div class="galeria-bloco">
   <h3>Reunião de Junho – 01/06/2026</h3>
+<button
+  class="botao-galeria"
+  onclick="mostrarGaleriaJunho()">
+
+  📸 Veja as fotos da reunião de junho
+
+</button>
+
+  <div id="galeria-junho" style="display:none;">
 
   <div class="galeria-grid">
 
@@ -815,6 +842,87 @@ function mostrarAgendaAnterior(){
   }
 
 }
+function mostrarGaleriaInauguracao(){
+
+  const galeria =
+    document.getElementById("galeria-inauguracao");
+
+  const botao =
+    document.querySelector(".botao-galeria");
+
+  if(galeria.style.display === "none"){
+
+    galeria.style.display = "block";
+
+    botao.innerHTML =
+      "🔼 Ocultar fotos da inauguração";
+
+  } else {
+
+    galeria.style.display = "none";
+
+    botao.innerHTML =
+      "📸 Veja as fotos da inauguração";
+
+  }
+
+}
+function mostrarGaleriaAbril(){
+
+  const galeria =
+    document.getElementById("galeria-abril");
+
+  const botao =
+    document.querySelector(
+      '[onclick="mostrarGaleriaAbril()"]'
+    );
+
+  if(galeria.style.display === "none"){
+
+    galeria.style.display = "block";
+
+    botao.innerHTML =
+      "🔼 Ocultar fotos da reunião de abril";
+
+  } else {
+
+    galeria.style.display = "none";
+
+    botao.innerHTML =
+      "📸 Veja as fotos da reunião de abril";
+
+  }
+
+}
+
+function mostrarGaleriaJunho(){
+
+  const galeria =
+    document.getElementById("galeria-junho");
+
+  const botao =
+    document.querySelector(
+      '[onclick="mostrarGaleriaJunho()"]'
+    );
+
+  if(galeria.style.display === "none"){
+
+    galeria.style.display = "block";
+
+    botao.innerHTML =
+      "🔼 Ocultar fotos da reunião de junho";
+
+  } else {
+
+    galeria.style.display = "none";
+
+    botao.innerHTML =
+      "📸 Veja as fotos da reunião de junho";
+
+  }
+
+}
+
 function mostrarCadastros(){
   let lista = JSON.parse(localStorage.getItem("denominacoes")) || [];
   let area = document.getElementById("listaDenominacoes");
